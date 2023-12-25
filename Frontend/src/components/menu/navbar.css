@@ -1,0 +1,40 @@
+nav {
+  display: flex;
+  background-color: #F4DFC8;
+  /* padding: 10px; */
+  width: 100%;
+  position: relative; 
+  justify-content: space-between;
+  z-index: 1000; /* High z-index to ensure it's above other elements */
+}
+
+.games-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%; 
+  left: 0;
+  /* Additional styling for the dropdown */
+}
+
+.game-selector .games-dropdown {
+  position: absolute;
+  top: 100%; /* Position it right below the navbar */
+  left: 0;
+  background-color: #F4DFC8;
+  z-index: 1000; /* Ensures it's above other page content */
+  display: none; /* Hide it initially */
+  /* additional styling for the dropdown */
+}
+
+
+.game-selector:hover .games-dropdown  {
+  display: block; /* Show the dropdown on hover */
+}
+.games-dropdown:hover  {
+  display: block; /* Show the dropdown on hover */
+}
+
+
+.auth-buttons {
+  /* styling for buttons */
+}

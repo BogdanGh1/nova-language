@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Game from "./pages/Game";
+import TicTacToeGame from "./pages/ticTacToe/TicTacToeGame";
+import CodeEditor from "./components/CodeEditor";
+import TicTacToe from "./pages/ticTacToe/TicTacToe";
 function App() {
   return (
     <Router>
@@ -14,7 +16,9 @@ function App() {
             path="/login"
             element={<Login userData={userData} setUserData={setUserData} />}
           /> */}
-          <Route path="/game" element={<Game />} />
+          <Route path="/game" element={<TicTacToeGame />} />
+          <Route path="/code" element={<CodeEditor />} />
+          <Route path="/tic" element={<TicTacToe />} />
         </Routes>
       </main>
     </Router>
