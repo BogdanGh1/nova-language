@@ -1,0 +1,179 @@
+from language.utils import Node
+from language.lexer import get_fip, identify_atoms, get_values_from_fip
+from pathlib import Path
+import string
+
+
+def get_rules():
+    rules_path = Path("language/resources/final_rules.txt")
+    lines = rules_path.read_text().split("\n")
+    rules = {}
+    for line in lines:
+        parts = line.split("->")
+        neterminal = parts[0].strip()
+        if neterminal not in rules:
+            rules[neterminal] = []
+        parts = parts[1].split("|")
+        for part in parts:
+            rules[neterminal].append(part.strip().split())
+    return rules
+
+
+def get_firsts(rules: dict):
+    queue = list(rules.keys())
+    firsts = {}
+    i = 0
+    while i < len(queue):
+        if queue[i] in firsts:
+            pass
+        else:
+            terminals = set()
+            ok = True
+            for rule in rules[queue[i]]:
+                if not rule[0][0] in string.ascii_uppercase:
+                    terminals.add(rule[0])
+                else:
+                    for atom in rule:
+                        if not atom[0] in string.ascii_uppercase:
+                            terminals.add(atom)
+                            break
+                        else:
+                            if atom in firsts:
+                                if "#" in firsts[atom]:
+                                    for x in firsts[atom]:
+                                        if x != "#":
+                                            terminals.add(x)
+                                else:
+                                    for x in firsts[atom]:
+                                        terminals.add(x)
+                                    break
+                            else:
+                                queue.append(queue[i])
+                                ok = False
+                                break
+                    if not ok:
+                        break
+            if ok:
+                firsts[queue[i]] = terminals
+        i += 1
+    i = 0
+    return firsts
+
+
+def get_first_for_sequence(sequence: list, firsts: dict[set]):
+    result = set()
+    for element in sequence:
+        if element not in firsts:
+            result.add(element)
+            return result
+        if "#" not in firsts[element]:
+            result = result.union(firsts[element])
+            return result
+        result = result.union(firsts[element])
+        result.remove("#")
+    return result
+
+
+def epsilon_exists_in_sequence(sequence: list, firsts: dict[set]):
+    for element in sequence:
+        if element not in firsts:
+            return False
+        if "#" not in firsts[element]:
+            return False
+        return True
+
+
+def get_follows(start_symbol: str, rules: dict, firsts: dict[set]):
+    queue = list(rules.keys())
+    follows = {}
+    i = 0
+    while i < len(queue):
+        terminals = set()
+        symbol = queue[i]
+        ok = True
+        for non_terminal in rules:
+            for rule in rules[non_terminal]:
+                for j in range(len(rule)):
+                    if rule[j] == symbol:
+                        if j == len(rule) - 1:
+                            if non_terminal in follows:
+                                for x in follows[non_terminal]:
+                                    terminals.add(x)
+                            elif non_terminal != symbol:
+                                queue.append(symbol)
+                                ok = False
+                        else:
+                            terminals = terminals.union(
+                                get_first_for_sequence(rule[j + 1 :], firsts)
+                            )
+                            if epsilon_exists_in_sequence(rule[j + 1 :], firsts):
+                                if non_terminal in follows:
+                                    for x in follows[non_terminal]:
+                                        terminals.add(x)
+                                elif non_terminal != symbol:
+                                    queue.append(symbol)
+                                    ok = False
+                if not ok:
+                    break
+            if not ok:
+                break
+        if ok:
+            follows[symbol] = terminals
+            if symbol == start_symbol:
+                follows[symbol].add("$")
+
+        i += 1
+    return follows
+
+
+def get_parse_table(rules, firsts, follows):
+    table = {}
+    for symbol in rules:
+        for rule in rules[symbol]:
+            current_firsts = get_first_for_sequence(rule, firsts)
+
+            for first in current_firsts:
+                if first != "#":
+                    if symbol in table:
+                        table[symbol][first] = rule
+                    else:
+                        table[symbol] = {}
+                        table[symbol][first] = rule
+            if "#" in current_firsts:
+                for follow in follows[symbol]:
+                    if symbol in table:
+                        table[symbol][follow] = ["#"]
+                    else:
+                        table[symbol] = {}
+                        table[symbol][follow] = ["#"]
+                if "$" in follows[symbol]:
+                    if symbol in table:
+                        table[symbol]["$"] = rule
+                    else:
+                        table[symbol] = {}
+                        table[symbol]["$"] = rule
+    return table
+
+
+def _parse(sequence: list, table: dict[dict[list]], symbol: str) -> Node:
+    if not symbol[0] in string.ascii_uppercase:
+        return Node(symbol)
+    node = Node(symbol)
+    rule = table[symbol][sequence[-1]]
+    for x in rule:
+        child = _parse(sequence, table, x)
+        node.add_child(child)
+        sequence = sequence[: -child.get_size()]
+    return node
+
+
+def parse(text: str) -> Node:
+    rules = get_rules()
+    firsts = get_firsts(rules)
+    follows = get_follows("Functions", rules, firsts)
+    parse_table = get_parse_table(rules, firsts, follows)
+
+    atoms = identify_atoms(text.split("\n"))
+    fip = get_fip(atoms)
+    fip_values = get_values_from_fip(fip)
+    return _parse(fip_values, parse_table, "Functions")

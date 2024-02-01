@@ -5,7 +5,7 @@ import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/theme-monokai";
 
-function LogBoard() {
+function LogBoard({ logs }) {
   return (
     <AceEditor
       mode="javascript"
@@ -14,6 +14,7 @@ function LogBoard() {
       fontSize={18}
       width="400px"
       height="605px"
+      value={logs}
       editorProps={{ $blockScrolling: true }}
       readOnly={true}
     />

@@ -1,5 +1,3 @@
-# main.py
-
 from typing import Optional
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -65,4 +63,17 @@ async def create_item(item: Item):
 @app.post("/code")
 async def run_code(code: Code):
     logger.info(code)
-    return {"pula": "pizda"}
+    return [
+        {"type": "setCell", "position": 0, "value": "X"},
+        {"type": "setCell", "position": 1, "value": "O"},
+        {"type": "setScore", "player": "X", "value": 2},
+        {"type": "printLogs", "text": "hello world"},
+        {"type": "printLogs", "text": "hello world"},
+    ]
+
+
+@app.get("/tictactoe/{cell_index}")
+async def cell_click(cell_index: str):
+    return [
+        {"type": "printLogs", "text": f"{cell_index}"},
+    ]
