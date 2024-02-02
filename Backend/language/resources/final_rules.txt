@@ -1,9 +1,10 @@
-Functions -> Function Functions
-Function -> function ( Id_List ) { Instructions }
-Id_List -> id , Id_List | id
-Instructions -> DefineInstruction | DefineGlobalInstruction | AttributionInstruction
-DefineInstruction -> let IdList ;
-DefineGlobalInstruction -> global let IdList ;
+Function -> function id ( Id_List ) { Instructions }
+Id_List -> id Id_List1
+Id_List1 -> , id Id_List1 | #
+Instructions -> Instruction | Instruction Instructions | #
+Instruction -> DefineInstruction | DefineGlobalInstruction | AttributionInstruction
+DefineInstruction -> let Id_List ;
+DefineGlobalInstruction -> global let Id_List ;
 AttributionInstruction -> id = Expression ;
 Expression -> T E1
 E1 -> + T E1 | #

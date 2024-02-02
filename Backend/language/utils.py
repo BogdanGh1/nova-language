@@ -2,13 +2,9 @@ from dataclasses import dataclass
 
 
 class Node:
-    # def __init__(self, name: str, rule: list, children: list["Node"]) -> None:
-    #     self.name = name
-    #     self.rule = rule
-    #     self.children = children
-
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str = None, value=None) -> None:
         self.name = name
+        self.value = value
         self.children = []
 
     def add_child(self, node: "Node") -> None:
@@ -21,6 +17,26 @@ class Node:
         for child in self.children:
             s += child.get_size()
         return s
+
+    def find_next_nonterminal_leaf(self):
+        if self.children == []:
+            if self.name is not None:
+                return self
+            return None
+        for child in self.children:
+            r = child.find_next_nonterminal_leaf()
+            if r is not None:
+                return r
+        return None
+
+    def build_dict(self):
+        if self.value is not None:
+            return self.value
+        d = {}
+        d[self.name] = []
+        for child in self.children:
+            d[self.name].append(child.build_dict())
+        return d
 
 
 @dataclass

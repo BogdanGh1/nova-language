@@ -155,25 +155,65 @@ def get_parse_table(rules, firsts, follows):
     return table
 
 
-def _parse(sequence: list, table: dict[dict[list]], symbol: str) -> Node:
-    if not symbol[0] in string.ascii_uppercase:
-        return Node(symbol)
-    node = Node(symbol)
-    rule = table[symbol][sequence[-1]]
-    for x in rule:
-        child = _parse(sequence, table, x)
-        node.add_child(child)
-        sequence = sequence[: -child.get_size()]
-    return node
+# def _parse(sequence: list, table: dict[dict[list]], symbol: str) -> Node:
+#     if not symbol[0] in string.ascii_uppercase:
+#         return Node(symbol)
+#     node = Node(symbol)
+#     rule = table[symbol][sequence[-1]]
+#     for x in rule:
+#         child = _parse(sequence, table, x)
+#         node.add_child(child)
+#         sequence = sequence[: -child.get_size()]
+#     return node
 
 
-def parse(text: str) -> Node:
+def _parse(sequence: list, table: dict[dict[list]], start_symbol: str) -> list[str]:
+    stack = ["$", start_symbol]
+    sequence.append("$")
+    sequence.reverse()
+    productions = []
+    while True:
+        while stack[-1] == "#":
+            stack.pop()
+        if sequence[-1] == "$" and stack[-1] == "$":
+            break
+        if not stack[-1][0] in string.ascii_uppercase:
+            if stack[-1] == sequence[-1]:
+                stack.pop()
+                sequence.pop()
+            else:
+                raise KeyError
+        else:
+            rule = table[stack[-1]][sequence[-1]]
+            productions.append([stack[-1], "->"] + rule)
+            stack.pop()
+            stack.extend(reversed(rule))
+
+    return productions
+
+
+def parse(text: str) -> list[str]:
     rules = get_rules()
     firsts = get_firsts(rules)
-    follows = get_follows("Functions", rules, firsts)
+    follows = get_follows("Function", rules, firsts)
     parse_table = get_parse_table(rules, firsts, follows)
 
     atoms = identify_atoms(text.split("\n"))
     fip = get_fip(atoms)
     fip_values = get_values_from_fip(fip)
-    return _parse(fip_values, parse_table, "Functions")
+    return _parse(fip_values, parse_table, "Function")
+
+
+def build_syntax_tree(text: str):
+    root = Node(name="Function")
+    productions = parse(text)
+    for production in productions:
+        next = root.find_next_nonterminal_leaf()
+        atoms = production[2:]
+        for atom in atoms:
+            if not atom[0] in string.ascii_uppercase:
+                node = Node(value=atom)
+            else:
+                node = Node(name=atom)
+            next.add_child(node)
+    return root
