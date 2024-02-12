@@ -25,15 +25,59 @@
             {
               "Instruction": [
                 {
-                  "DefineInstruction": [
-                    "let",
-                    { "Id_List": ["id", { "Id_List1": ["#"] }] },
+                  "AttributionInstruction": [
+                    "id",
+                    "=",
+                    {
+                      "Expression": [
+                        { "T": [{ "F": ["id"] }, { "T1": ["#"] }] },
+                        {
+                          "E1": [
+                            "+",
+                            { "T": [{ "F": ["id"] }, { "T1": ["#"] }] },
+                            {
+                              "E1": [
+                                "-",
+                                {
+                                  "T": [
+                                    { "F": ["id"] },
+                                    {
+                                      "T1": [
+                                        "*",
+                                        { "F": ["id"] },
+                                        { "T1": ["#"] }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                { "E1": ["#"] }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
                     ";"
                   ]
                 }
               ]
             },
-            { "Instructions": ["#"] }
+            {
+              "Instructions": [
+                {
+                  "Instruction": [
+                    {
+                      "DefineInstruction": [
+                        "let",
+                        { "Id_List": ["id", { "Id_List1": ["#"] }] },
+                        ";"
+                      ]
+                    }
+                  ]
+                },
+                { "Instructions": ["#"] }
+              ]
+            }
           ]
         }
       ]

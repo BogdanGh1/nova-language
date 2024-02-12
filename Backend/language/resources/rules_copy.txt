@@ -7,7 +7,7 @@ DefineInstruction -> let Id_List ;
 DefineGlobalInstruction -> global let Id_List ;
 AttributionInstruction -> id = Expression ;
 Expression -> T E1
-E1 -> + T E1 | - T E1 | #
+E1 -> + T E1 | #
 T -> F T1
-T1 -> * F T1 | / F T1 | #
-F -> ( E ) | id | const
+T1 -> * F T1 | #
+F -> ( E ) | id

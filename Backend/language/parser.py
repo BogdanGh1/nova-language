@@ -155,18 +155,6 @@ def get_parse_table(rules, firsts, follows):
     return table
 
 
-# def _parse(sequence: list, table: dict[dict[list]], symbol: str) -> Node:
-#     if not symbol[0] in string.ascii_uppercase:
-#         return Node(symbol)
-#     node = Node(symbol)
-#     rule = table[symbol][sequence[-1]]
-#     for x in rule:
-#         child = _parse(sequence, table, x)
-#         node.add_child(child)
-#         sequence = sequence[: -child.get_size()]
-#     return node
-
-
 def _parse(sequence: list, table: dict[dict[list]], start_symbol: str) -> list[str]:
     stack = ["$", start_symbol]
     sequence.append("$")
@@ -204,7 +192,7 @@ def parse(text: str) -> list[str]:
     return _parse(fip_values, parse_table, "Function")
 
 
-def build_syntax_tree(text: str):
+def build_syntax_tree(text: str) -> Node:
     root = Node(name="Function")
     productions = parse(text)
     for production in productions:
