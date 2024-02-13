@@ -169,6 +169,7 @@ def _parse(
             break
         if not stack[-1][0] in string.ascii_uppercase:
             if stack[-1] == sequence[-1].value_type:
+                productions[-1].add_atom(sequence[-1])
                 stack.pop()
                 sequence.pop()
             else:
@@ -199,7 +200,9 @@ def build_syntax_tree(text: str) -> Node:
         next = root.find_next_nonterminal_leaf()
         atoms = production.rule
         for atom in atoms:
-            if not atom[0] in string.ascii_uppercase:
+            if isinstance(atom, Atom):
+                node = Node(value=atom.value)
+            elif not atom[0] in string.ascii_uppercase:
                 node = Node(value=atom)
             else:
                 node = Node(name=atom)

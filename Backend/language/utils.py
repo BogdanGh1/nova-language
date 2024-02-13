@@ -53,9 +53,18 @@ class Atom:
 
 
 class Production:
-    def __init__(self, name: str, rule: list[str]) -> None:
+    def __init__(self, name: str, rule) -> None:
         self.name = name
-        self._rule = rule
+        self._rule = rule[:]
+
+    def add_atom(self, atom: Atom) -> None:
+        for i in range(len(self._rule)):
+            if (
+                isinstance(self._rule[i], str)
+                and self._rule[i] in ("id", "const")
+                and atom.type != "keyword"
+            ):
+                self._rule[i] = atom
 
     @property
     def rule(self):
