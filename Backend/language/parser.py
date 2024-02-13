@@ -1,11 +1,12 @@
-from language.utils import Node, Atom, Production
+from language.utils import Atom, Production
+from language.nodes import Node, create_node
 from language.lexer import get_fip
 from pathlib import Path
 import string
 
 
 def get_rules():
-    rules_path = Path("language/resources/final_rules.txt")
+    rules_path = Path("language/config/final_rules.txt")
     lines = rules_path.read_text().split("\n")
     rules = {}
     for line in lines:
@@ -194,7 +195,7 @@ def parse(text: str) -> list[str]:
 
 
 def build_syntax_tree(text: str) -> Node:
-    root = Node(name="Function")
+    root = create_node(name="Function")
     productions = parse(text)
     for production in productions:
         next = root.find_next_nonterminal_leaf()
@@ -205,6 +206,6 @@ def build_syntax_tree(text: str) -> Node:
             elif not atom[0] in string.ascii_uppercase:
                 node = Node(value=atom)
             else:
-                node = Node(name=atom)
+                node = create_node(name=atom)
             next.add_child(node)
     return root

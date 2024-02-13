@@ -101,7 +101,7 @@ def add_type(
 def get_fip(text: str) -> list[Atom]:
     atoms = identify_atoms(text.split("\n"))
 
-    atoms_table_file = Path("language/resources/atoms_table.txt")
+    atoms_table_file = Path("language/config/atoms_table.txt")
     atoms_table = get_atoms_table(atoms_table_file)
 
     add_type(atoms_table, atoms)

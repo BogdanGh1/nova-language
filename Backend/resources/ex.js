@@ -1,5 +1,6 @@
-function init(a, b) {
+function init() {
     global let player;
-    player = x + y - z * t;
     let c;
+    c = 5;
+    print(c);
 }
