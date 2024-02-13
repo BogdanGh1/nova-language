@@ -1,5 +1,5 @@
-from language.utils import Node
-from language.lexer import get_fip, identify_atoms, get_values_from_fip
+from language.utils import Node, Atom, Production
+from language.lexer import get_fip
 from pathlib import Path
 import string
 
@@ -155,25 +155,27 @@ def get_parse_table(rules, firsts, follows):
     return table
 
 
-def _parse(sequence: list, table: dict[dict[list]], start_symbol: str) -> list[str]:
+def _parse(
+    sequence: list[Atom], table: dict[dict[list]], start_symbol: str
+) -> list[str]:
     stack = ["$", start_symbol]
-    sequence.append("$")
+    sequence.append(Atom(value="$", index=-1))
     sequence.reverse()
     productions = []
     while True:
         while stack[-1] == "#":
             stack.pop()
-        if sequence[-1] == "$" and stack[-1] == "$":
+        if sequence[-1].value_type == "$" and stack[-1] == "$":
             break
         if not stack[-1][0] in string.ascii_uppercase:
-            if stack[-1] == sequence[-1]:
+            if stack[-1] == sequence[-1].value_type:
                 stack.pop()
                 sequence.pop()
             else:
                 raise KeyError
         else:
-            rule = table[stack[-1]][sequence[-1]]
-            productions.append([stack[-1], "->"] + rule)
+            rule = table[stack[-1]][sequence[-1].value_type]
+            productions.append(Production(stack[-1], rule))
             stack.pop()
             stack.extend(reversed(rule))
 
@@ -186,10 +188,8 @@ def parse(text: str) -> list[str]:
     follows = get_follows("Function", rules, firsts)
     parse_table = get_parse_table(rules, firsts, follows)
 
-    atoms = identify_atoms(text.split("\n"))
-    fip = get_fip(atoms)
-    fip_values = get_values_from_fip(fip)
-    return _parse(fip_values, parse_table, "Function")
+    atoms = get_fip(text)
+    return _parse(atoms, parse_table, "Function")
 
 
 def build_syntax_tree(text: str) -> Node:
@@ -197,7 +197,7 @@ def build_syntax_tree(text: str) -> Node:
     productions = parse(text)
     for production in productions:
         next = root.find_next_nonterminal_leaf()
-        atoms = production[2:]
+        atoms = production.rule
         for atom in atoms:
             if not atom[0] in string.ascii_uppercase:
                 node = Node(value=atom)

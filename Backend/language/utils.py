@@ -40,46 +40,29 @@ class Node:
 
 
 @dataclass
-class AtomCode:
-    code: int
-    pos: tuple[int, int] | int | None = None
-    value: str | None = None
+class Atom:
+    value: str
+    index: int
+    type: str | None = None
+
+    @property
+    def value_type(self):
+        if self.type == "keyword" or self.type == None:
+            return self.value
+        return self.type
 
 
-class HashTable:
-    MODULO = 107
+class Production:
+    def __init__(self, name: str, rule: list[str]) -> None:
+        self.name = name
+        self._rule = rule
 
-    def __init__(self) -> None:
-        self.table = [[] for _ in range(self.MODULO)]
+    @property
+    def rule(self):
+        return self._rule
+
+    def __str__(self) -> str:
+        return self.name + " -> " + str(self._rule)
 
     def __repr__(self) -> str:
-        repr = {}
-        for index, row in enumerate(self.table):
-            if row != []:
-                repr[index] = row
-        return str(repr)
-
-    def __get_hash(self, x: str) -> int:
-        sum = 0
-        for ch in x:
-            sum += ord(ch)
-        return sum % self.MODULO
-
-    def find(self, x: str) -> bool:
-        hash = self.__get_hash(x)
-        for value in self.table[hash]:
-            if x == value:
-                return True
-        return False
-
-    def add(self, x: str) -> None:
-        if not self.find(x):
-            hash = self.__get_hash(x)
-            self.table[hash].append(x)
-
-    def get_pos(self, x: str) -> tuple[int, int]:
-        hash = self.__get_hash(x)
-        for index, value in enumerate(self.table[hash]):
-            if x == value:
-                return hash, index
-        return False
+        return str(self)
