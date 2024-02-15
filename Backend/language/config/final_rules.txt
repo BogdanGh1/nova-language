@@ -1,4 +1,4 @@
-Function -> function id ( Id_List ) { Instructions }
+Function -> function function_id ( Id_List ) { Instructions }
 Id_List -> id Id_List1 | #
 Id_List1 -> , id Id_List1 | #
 Instructions -> Instruction | Instruction Instructions | #
@@ -10,7 +10,7 @@ Expression -> T E1
 E1 -> + T E1 | - T E1 | #
 T -> F T1
 T1 -> * F T1 | / F T1 | #
-F -> ( E ) | id | const
-FunctionCall -> func_id ( Parameters ) ;
+F -> ( Expression ) | id | const | FunctionCall
+FunctionCall -> function_id ( Parameters ) ;
 Parameters -> Expression Parameters1 | #
-Parameters1 -> Expression Parameters1 | #
+Parameters1 -> , Expression Parameters1 | #

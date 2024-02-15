@@ -202,7 +202,7 @@ def build_syntax_tree(text: str) -> Node:
         atoms = production.rule
         for atom in atoms:
             if isinstance(atom, Atom):
-                node = Node(value=atom.value)
+                node = Node(value=atom)
             elif not atom[0] in string.ascii_uppercase:
                 node = Node(value=atom)
             else:

@@ -88,14 +88,24 @@ def add_type(
     for atom in atoms:
         if atom.value in atoms_table:
             atom.type = "keyword"
-        elif is_constant(atom.value) or is_string(atom.value):
+        elif is_constant(atom.value):
             atom.type = "const"
+            atom.value = int(atom.value)
+        elif is_string(atom.value):
+            atom.type = "const"
+            atom.value = atom.value[1:-1]
         elif is_variable(atom.value):
             atom.type = "id"
         else:
             raise ValueError(
                 "Atom" + atom.value + "necunoscut la linia " + str(atom.index)
             )
+
+
+def add_function_id_atoms(atoms: list[Atom]):
+    for i in range(len(atoms) - 1):
+        if atoms[i].type == "id" and atoms[i + 1].value == "(":
+            atoms[i].type = "function_id"
 
 
 def get_fip(text: str) -> list[Atom]:
@@ -105,4 +115,5 @@ def get_fip(text: str) -> list[Atom]:
     atoms_table = get_atoms_table(atoms_table_file)
 
     add_type(atoms_table, atoms)
+    add_function_id_atoms(atoms)
     return atoms
