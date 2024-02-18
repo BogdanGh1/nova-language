@@ -184,19 +184,18 @@ def _parse(
     return productions
 
 
-def parse(text: str) -> list[str]:
+def parse(atoms: list[Atom]) -> list[str]:
     rules = get_rules()
     firsts = get_firsts(rules)
     follows = get_follows("Function", rules, firsts)
     parse_table = get_parse_table(rules, firsts, follows)
 
-    atoms = get_fip(text)
     return _parse(atoms, parse_table, "Function")
 
 
-def build_syntax_tree(text: str) -> Node:
+def build_syntax_tree(atoms: list[Atom]) -> Node:
     root = create_node(name="Function")
-    productions = parse(text)
+    productions = parse(atoms)
     for production in productions:
         next = root.find_next_nonterminal_leaf()
         atoms = production.rule

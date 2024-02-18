@@ -67,31 +67,43 @@ class Instructions_Node(Node):
 
 class DefineInstruction_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
-        print("Define instruction")
+        id_list = self.children[1].eval(var_table, actions, code_runner)
+        for id in id_list:
+            var_table.add_var(id.value)
 
 
 class DefineGlobalInstruction_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
-        print("Define global instruction")
+        id_list = self.children[2].eval(var_table, actions, code_runner)
+        for id in id_list:
+            var_table.add_global_var(id.value)
 
 
 class AttributionInstruction_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
-        print("Attribution instruction")
+        var = var_table.get_var(self.children[0].value.value)
+        if var is not None:
+            var.value = self.children[2].eval(var_table, actions, code_runner)
 
 
 class Id_List_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
-        if self.value != "#":
-            print(self.children[0].value)
-            self.children[1].eval(var_table, actions, code_runner)
+        if self.children[0].value != "#":
+            id_list = self.children[1].eval(var_table, actions, code_runner)
+            id_list.insert(0, self.children[0].value)
+            return id_list
+        else:
+            return []
 
 
 class Id_List1_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
-        if self.value != "#":
-            print(self.children[0].value)
-            self.children[2].eval(var_table, actions, code_runner)
+        if self.children[0].value != "#":
+            id_list = self.children[2].eval(var_table, actions, code_runner)
+            id_list.insert(0, self.children[1].value)
+            return id_list
+        else:
+            return []
 
 
 class Expression_Node(Node):
@@ -158,7 +170,7 @@ class F_Node(Node):
             isinstance(self.children[0].value, Atom)
             and self.children[0].value.type == "id"
         ):
-            return var_table[self.children[0].value]  # TODO
+            return var_table.get_var(self.children[0].value.value).value
         elif (
             isinstance(self.children[0].value, Atom)
             and self.children[0].value.type == "const"

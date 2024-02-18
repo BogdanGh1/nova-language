@@ -117,3 +117,13 @@ def get_fip(text: str) -> list[Atom]:
     add_type(atoms_table, atoms)
     add_function_id_atoms(atoms)
     return atoms
+
+
+def get_functions_atoms(text: str) -> list[list[Atom]]:
+    atoms = get_fip(text)
+    functions_atoms = []
+    for atom in atoms:
+        if atom.value == "function":
+            functions_atoms.append([])
+        functions_atoms[-1].append(atom)
+    return functions_atoms
