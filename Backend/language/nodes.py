@@ -51,10 +51,14 @@ class Node:
 
 
 class Function_Node(Node):
-    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+    def eval(
+        self, var_table: VariableTable, actions: list[Action], code_runner, params
+    ):
         id_list = self.children[3].eval(var_table, actions, code_runner)
-        for id in id_list:
+        for index, id in enumerate(id_list):
             var_table.add_var(id.value)
+            var = var_table.get_var(id.value)
+            var.value = params[index]
         return self.children[6].eval(var_table, actions, code_runner)
 
 

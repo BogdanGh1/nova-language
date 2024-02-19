@@ -18,7 +18,7 @@ class Function:
         params: list | None = None,
     ):
         var_table.create_new_var_scope(True)
-        ret = self.syntax_root.eval(var_table, actions, code_runner)
+        ret = self.syntax_root.eval(var_table, actions, code_runner, params)
         var_table.remove_function_var_scopes()
         return ret
 
