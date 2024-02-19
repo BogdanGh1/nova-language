@@ -18,8 +18,9 @@ class Function:
         params: list | None = None,
     ):
         var_table.create_new_var_scope(True)
-        self.syntax_root.eval(var_table, actions, code_runner)
+        ret = self.syntax_root.eval(var_table, actions, code_runner)
         var_table.remove_function_var_scopes()
+        return ret
 
 
 class PrintFunction:
@@ -64,6 +65,6 @@ class CodeRunner:
         self.run_function(name)
         return self.actions
 
-    def run_function(self, name: str, params: list | None = None) -> None:
+    def run_function(self, name: str, params: list | None = None):
         function = self.code.get_function(name)
-        function.eval(self.var_table, self.actions, self, params)
+        return function.eval(self.var_table, self.actions, self, params)

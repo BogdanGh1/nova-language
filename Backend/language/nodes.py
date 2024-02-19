@@ -3,6 +3,10 @@ from language.variables import VariableTable
 from language.utils import Atom
 
 
+class Return:
+    pass
+
+
 class Node:
     def __init__(self, name: str = None, value=None) -> None:
         self.name = name
@@ -48,21 +52,28 @@ class Node:
 
 class Function_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
-        self.children[6].eval(var_table, actions, code_runner)
+        id_list = self.children[3].eval(var_table, actions, code_runner)
+        for id in id_list:
+            var_table.add_var(id.value)
+        return self.children[6].eval(var_table, actions, code_runner)
 
 
 class Instruction_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
-        self.children[0].eval(var_table, actions, code_runner)
+        return self.children[0].eval(var_table, actions, code_runner)
 
 
 class Instructions_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
         if len(self.children) == 2 and isinstance(self.children[1], Instructions_Node):
-            self.children[0].eval(var_table, actions, code_runner)
-            self.children[1].eval(var_table, actions, code_runner)
+            ret = self.children[0].eval(var_table, actions, code_runner)
+            if ret is not None:
+                return ret
+            ret = self.children[1].eval(var_table, actions, code_runner)
+            return ret
         elif len(self.children) == 1 and isinstance(self.children[0], Instruction_Node):
-            self.children[0].eval(var_table, actions, code_runner)
+            ret = self.children[0].eval(var_table, actions, code_runner)
+            return ret
 
 
 class DefineInstruction_Node(Node):
@@ -86,9 +97,22 @@ class AttributionInstruction_Node(Node):
             var.value = self.children[2].eval(var_table, actions, code_runner)
 
 
+class FunctionCallInstruction_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        return self.children[0].eval(var_table, actions, code_runner)
+
+
 class ReturnInstruction_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
-        pass
+        return self.children[1].eval(var_table, actions, code_runner)
+
+
+class ReturnValue_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        if self.children[0].value != "#":
+            return self.children[0].eval(var_table, actions, code_runner)
+        else:
+            return Return()
 
 
 class Id_List_Node(Node):
@@ -188,7 +212,7 @@ class F_Node(Node):
 class FunctionCall_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
         parameters = self.children[2].eval(var_table, actions, code_runner)
-        code_runner.run_function(self.children[0].value.value, parameters)
+        return code_runner.run_function(self.children[0].value.value, parameters)
 
 
 class Parameters_Node(Node):
@@ -229,6 +253,8 @@ def create_node(name, value=None):
             return DefineGlobalInstruction_Node(name=name, value=value)
         case "AttributionInstruction":
             return AttributionInstruction_Node(name=name, value=value)
+        case "FunctionCallInstruction":
+            return FunctionCallInstruction_Node(name=name, value=value)
         case "Expression":
             return Expression_Node(name=name, value=value)
         case "E1":
@@ -247,4 +273,6 @@ def create_node(name, value=None):
             return Parameters1_Node(name=name, value=value)
         case "ReturnInstruction":
             return ReturnInstruction_Node(name=name, value=value)
+        case "ReturnValue":
+            return ReturnValue_Node(name=name, value=value)
     return Node(value=value)
