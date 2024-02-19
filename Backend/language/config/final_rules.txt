@@ -2,10 +2,11 @@ Function -> function function_id ( Id_List ) { Instructions }
 Id_List -> id Id_List1 | #
 Id_List1 -> , id Id_List1 | #
 Instructions -> Instruction | Instruction Instructions | #
-Instruction -> DefineInstruction | DefineGlobalInstruction | AttributionInstruction | FunctionCall
+Instruction -> DefineInstruction | DefineGlobalInstruction | AttributionInstruction | FunctionCall | ReturnInstruction
 DefineInstruction -> let Id_List ;
 DefineGlobalInstruction -> global let Id_List ;
 AttributionInstruction -> id = Expression ;
+ReturnInstruction -> return Expression ;
 Expression -> T E1
 E1 -> + T E1 | - T E1 | #
 T -> F T1

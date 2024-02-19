@@ -49,4 +49,5 @@ class VariableTable:
             var = varScope.get_var(var_name)
             if var is not None or varScope.function_flag:
                 return var
-        return None
+        var = self.varScopes[0].get_var(var_name)
+        return var

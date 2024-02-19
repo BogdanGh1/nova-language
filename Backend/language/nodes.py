@@ -86,6 +86,11 @@ class AttributionInstruction_Node(Node):
             var.value = self.children[2].eval(var_table, actions, code_runner)
 
 
+class ReturnInstruction_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        pass
+
+
 class Id_List_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
         if self.children[0].value != "#":
@@ -240,4 +245,6 @@ def create_node(name, value=None):
             return Parameters_Node(name=name, value=value)
         case "Parameters1":
             return Parameters1_Node(name=name, value=value)
+        case "ReturnInstruction":
+            return ReturnInstruction_Node(name=name, value=value)
     return Node(value=value)
