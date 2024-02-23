@@ -56,8 +56,8 @@ class Function_Node(Node):
     ):
         id_list = self.children[3].eval(var_table, actions, code_runner)
         for index, id in enumerate(id_list):
-            var_table.add_var(id.value)
-            var = var_table.get_var(id.value)
+            var_table.add_var(id[0].value)
+            var = var_table.get_var(id[0].value)
             var.value = params[index]
         return self.children[6].eval(var_table, actions, code_runner)
 
@@ -75,23 +75,26 @@ class Instructions_Node(Node):
                 return ret
             ret = self.children[1].eval(var_table, actions, code_runner)
             return ret
-        elif len(self.children) == 1 and isinstance(self.children[0], Instruction_Node):
-            ret = self.children[0].eval(var_table, actions, code_runner)
-            return ret
 
 
 class DefineInstruction_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
         id_list = self.children[1].eval(var_table, actions, code_runner)
         for id in id_list:
-            var_table.add_var(id.value)
+            var_table.add_var(id[0].value)
+            if id[0] is not None:
+                var = var_table.get_var(id[0].value)
+                var.value = id[1]
 
 
 class DefineGlobalInstruction_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
         id_list = self.children[2].eval(var_table, actions, code_runner)
         for id in id_list:
-            var_table.add_global_var(id.value)
+            var_table.add_global_var(id[0].value)
+            if id[0] is not None:
+                var = var_table.get_var(id[0].value)
+                var.value = id[1]
 
 
 class AttributionInstruction_Node(Node):
@@ -111,6 +114,105 @@ class ReturnInstruction_Node(Node):
         return self.children[1].eval(var_table, actions, code_runner)
 
 
+class IfInstruction_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        cond = self.children[2].eval(var_table, actions, code_runner)
+        if cond:
+            var_table.create_new_var_scope()
+            rez = self.children[5].eval(var_table, actions, code_runner)
+            var_table.pop_var_scope()
+            return rez
+        else:
+            var_table.create_new_var_scope()
+            rez = self.children[7].eval(var_table, actions, code_runner)
+            var_table.pop_var_scope()
+            return rez
+
+
+class Else_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        if self.children[0].value != "#":
+            return self.children[2].eval(var_table, actions, code_runner)
+
+
+class WhileInstruction_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        cond = self.children[2].eval(var_table, actions, code_runner)
+        while cond:
+            var_table.create_new_var_scope()
+            ret = self.children[5].eval(var_table, actions, code_runner)
+            if ret is not None:
+                return ret
+            var_table.pop_var_scope()
+            cond = self.children[2].eval(var_table, actions, code_runner)
+
+
+class Condition_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        t1 = self.children[0].eval(var_table, actions, code_runner)
+        t2 = self.children[1].eval(var_table, actions, code_runner)
+        if t2 is None:
+            return t1
+        return t1 and t2
+
+
+class C1_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        if self.children[0].value == "#":
+            return None
+        t1 = self.children[1].eval(var_table, actions, code_runner)
+        t2 = self.children[2].eval(var_table, actions, code_runner)
+        if t2 is None:
+            return t1
+        return t1 and t2
+
+
+class AndTerm_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        t1 = self.children[0].eval(var_table, actions, code_runner)
+        t2 = self.children[1].eval(var_table, actions, code_runner)
+        if t2 is None:
+            return t1
+        return t1 or t2
+
+
+class AndTerm1_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        if self.children[0].value == "#":
+            return None
+        t1 = self.children[1].eval(var_table, actions, code_runner)
+        t2 = self.children[2].eval(var_table, actions, code_runner)
+        if t2 is None:
+            return t1
+        return t1 or t2
+
+
+class OrTerm_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        t1 = self.children[0].eval(var_table, actions, code_runner)
+        rel, t2 = self.children[1].eval(var_table, actions, code_runner)
+        match rel:
+            case "==":
+                return t1 == t2
+            case "!=":
+                return t1 != t2
+            case "<=":
+                return t1 <= t2
+            case ">=":
+                return t1 >= t2
+            case "<":
+                return t1 < t2
+            case ">":
+                return t1 > t2
+
+
+class RelValue_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        return self.children[0].value, self.children[1].eval(
+            var_table, actions, code_runner
+        )
+
+
 class ReturnValue_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
         if self.children[0].value != "#":
@@ -122,8 +224,9 @@ class ReturnValue_Node(Node):
 class Id_List_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
         if self.children[0].value != "#":
-            id_list = self.children[1].eval(var_table, actions, code_runner)
-            id_list.insert(0, self.children[0].value)
+            id_list = self.children[2].eval(var_table, actions, code_runner)
+            value = self.children[1].eval(var_table, actions, code_runner)
+            id_list.insert(0, (self.children[0].value, value))
             return id_list
         else:
             return []
@@ -132,11 +235,18 @@ class Id_List_Node(Node):
 class Id_List1_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
         if self.children[0].value != "#":
-            id_list = self.children[2].eval(var_table, actions, code_runner)
-            id_list.insert(0, self.children[1].value)
+            id_list = self.children[3].eval(var_table, actions, code_runner)
+            value = self.children[2].eval(var_table, actions, code_runner)
+            id_list.insert(0, (self.children[1].value, value))
             return id_list
         else:
             return []
+
+
+class InitialValue_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        if self.children[0].value != "#":
+            return self.children[1].eval(var_table, actions, code_runner)
 
 
 class Expression_Node(Node):
@@ -279,4 +389,24 @@ def create_node(name, value=None):
             return ReturnInstruction_Node(name=name, value=value)
         case "ReturnValue":
             return ReturnValue_Node(name=name, value=value)
+        case "IfInstruction":
+            return IfInstruction_Node(name=name, value=value)
+        case "Else":
+            return Else_Node(name=name, value=value)
+        case "WhileInstruction":
+            return WhileInstruction_Node(name=name, value=value)
+        case "Condition":
+            return Condition_Node(name=name, value=value)
+        case "C1":
+            return C1_Node(name=name, value=value)
+        case "AndTerm":
+            return AndTerm_Node(name=name, value=value)
+        case "AndTerm1":
+            return AndTerm1_Node(name=name, value=value)
+        case "OrTerm":
+            return OrTerm_Node(name=name, value=value)
+        case "RelValue":
+            return RelValue_Node(name=name, value=value)
+        case "InitialValue":
+            return InitialValue_Node(name=name, value=value)
     return Node(value=value)

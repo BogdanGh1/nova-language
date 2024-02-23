@@ -1,13 +1,23 @@
 Function -> function function_id ( Id_List ) { Instructions }
-Id_List -> id Id_List1 | #
-Id_List1 -> , id Id_List1 | #
-Instructions -> Instruction | Instruction Instructions | #
-Instruction -> DefineInstruction | DefineGlobalInstruction | AttributionInstruction | FunctionCallInstruction | ReturnInstruction
+Id_List -> id InitialValue Id_List1 | #
+Id_List1 -> , id InitialValue Id_List1 | #
+InitialValue -> = Expression | #
+Instructions -> Instruction Instructions | #
+Instruction -> DefineInstruction | DefineGlobalInstruction | AttributionInstruction | FunctionCallInstruction | ReturnInstruction | IfInstruction | WhileInstruction
 DefineInstruction -> let Id_List ;
 DefineGlobalInstruction -> global let Id_List ;
 AttributionInstruction -> id = Expression ;
 FunctionCallInstruction -> FunctionCall ;
 ReturnInstruction -> return ReturnValue ;
+IfInstruction -> if ( Condition ) { Instructions } Else
+Else -> else { Instructions } | #
+WhileInstruction -> while ( Condition ) { Instructions }
+Condition -> AndTerm C1
+C1 -> and AndTerm C1 | #
+AndTerm -> OrTerm AndTerm1
+AndTerm1 -> or OrTerm AndTerm1 | #
+OrTerm -> Expression RelValue
+RelValue -> == Expression | != Expression | <= Expression | >= Expression | < Expression | > Expression
 ReturnValue -> Expression | #
 Expression -> T E1
 E1 -> + T E1 | - T E1 | #

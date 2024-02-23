@@ -8,6 +8,7 @@ global
 }
 =
 if
+else
 while
 <
 <=
@@ -21,6 +22,7 @@ while
 *
 return
 ,
-&&
+and
+or
 [
 ]
