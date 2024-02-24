@@ -80,21 +80,21 @@ class Instructions_Node(Node):
 class DefineInstruction_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
         id_list = self.children[1].eval(var_table, actions, code_runner)
-        for id in id_list:
-            var_table.add_var(id[0].value)
-            if id[0] is not None:
-                var = var_table.get_var(id[0].value)
-                var.value = id[1]
+        for id, value in id_list:
+            var_table.add_var(id.value)
+            if id is not None:
+                var = var_table.get_var(id.value)
+                var.value = value
 
 
 class DefineGlobalInstruction_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
         id_list = self.children[2].eval(var_table, actions, code_runner)
-        for id in id_list:
-            var_table.add_global_var(id[0].value)
-            if id[0] is not None:
-                var = var_table.get_var(id[0].value)
-                var.value = id[1]
+        for id, value in id_list:
+            var_table.add_global_var(id.value)
+            if id is not None:
+                var = var_table.get_var(id.value)
+                var.value = value
 
 
 class AttributionInstruction_Node(Node):
