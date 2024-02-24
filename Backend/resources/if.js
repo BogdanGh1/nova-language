@@ -1,7 +1,11 @@
 function init() {
-    print(factorial(5));
+    print(max(5, 6));
 }
-function factorial(x) {
-    if (x == 0) { return 1; }
-    return factorial(x - 1) * x;
+function max(a, b) {
+    if (a > b) {
+        return a;
+    }
+    else {
+        return b;
+    }
 }

@@ -10,6 +10,7 @@ global
 if
 else
 while
+for
 <
 <=
 >

@@ -3,7 +3,7 @@ from language.utils import Atom
 import re
 
 FIRST_SEPARATORS = [" ", "{", "}", "(", ")", ";", ",", "[", "]"]
-SECOND_SEPARATORS = ["+", "-", "/", "*", "=", "<", ">"]
+SECOND_SEPARATORS = ["+", "-", "/", "*", "=", "<", ">", "!"]
 
 
 def get_atoms_table(file_path: Path) -> dict:

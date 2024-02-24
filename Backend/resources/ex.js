@@ -1,6 +1,11 @@
 function init() {
-    print(factorial(5));
-}
-function factorial(x) {
-    return (x - 1) * x;
+    let a = 100, b = 20;
+    while (a > b or a < b) {
+        if (a > b) {
+            a = a - b;
+        } else {
+            b = b - a;
+        }
+    }
+    print(a);
 }

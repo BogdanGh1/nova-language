@@ -29,8 +29,9 @@ class VariableTable:
         self.varScopes.append(varScope)
 
     def remove_function_var_scopes(self) -> None:
-        while self.varScopes[-1].function_flag:
+        while not self.varScopes[-1].function_flag:
             self.varScopes.pop()
+        self.varScopes.pop()
 
     def add_var(self, var_name: str) -> None:
         self.varScopes[-1].add_var(var_name)

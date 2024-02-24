@@ -3,7 +3,7 @@ Id_List -> id InitialValue Id_List1 | #
 Id_List1 -> , id InitialValue Id_List1 | #
 InitialValue -> = Expression | #
 Instructions -> Instruction Instructions | #
-Instruction -> DefineInstruction | DefineGlobalInstruction | AttributionInstruction | FunctionCallInstruction | ReturnInstruction | IfInstruction | WhileInstruction
+Instruction -> DefineInstruction | DefineGlobalInstruction | AttributionInstruction | FunctionCallInstruction | ReturnInstruction | IfInstruction | WhileInstruction | ForInstruction
 DefineInstruction -> let Id_List ;
 DefineGlobalInstruction -> global let Id_List ;
 AttributionInstruction -> id = Expression ;
@@ -12,6 +12,8 @@ ReturnInstruction -> return ReturnValue ;
 IfInstruction -> if ( Condition ) { Instructions } Else
 Else -> else { Instructions } | #
 WhileInstruction -> while ( Condition ) { Instructions }
+ForInstruction -> for ( DefineInstruction Condition ; Increment ) { Instructions }
+Increment -> id = Expression
 Condition -> AndTerm C1
 C1 -> and AndTerm C1 | #
 AndTerm -> OrTerm AndTerm1

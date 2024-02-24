@@ -119,14 +119,14 @@ class IfInstruction_Node(Node):
         cond = self.children[2].eval(var_table, actions, code_runner)
         if cond:
             var_table.create_new_var_scope()
-            rez = self.children[5].eval(var_table, actions, code_runner)
+            ret = self.children[5].eval(var_table, actions, code_runner)
             var_table.pop_var_scope()
-            return rez
+            return ret
         else:
             var_table.create_new_var_scope()
-            rez = self.children[7].eval(var_table, actions, code_runner)
+            ret = self.children[7].eval(var_table, actions, code_runner)
             var_table.pop_var_scope()
-            return rez
+            return ret
 
 
 class Else_Node(Node):
@@ -141,10 +141,34 @@ class WhileInstruction_Node(Node):
         while cond:
             var_table.create_new_var_scope()
             ret = self.children[5].eval(var_table, actions, code_runner)
+            var_table.pop_var_scope()
             if ret is not None:
                 return ret
-            var_table.pop_var_scope()
             cond = self.children[2].eval(var_table, actions, code_runner)
+
+
+class For_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        var_table.create_new_var_scope()
+        self.children[2].eval(var_table, actions, code_runner)
+        cond = self.children[3].eval(var_table, actions, code_runner)
+        while cond:
+            var_table.create_new_var_scope()
+            ret = self.children[8].eval(var_table, actions, code_runner)
+            var_table.pop_var_scope()
+            if ret is not None:
+                var_table.pop_var_scope()
+                return ret
+            self.children[5].eval(var_table, actions, code_runner)
+            cond = self.children[3].eval(var_table, actions, code_runner)
+        var_table.pop_var_scope()
+
+
+class Increment_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        var = var_table.get_var(self.children[0].value.value)
+        if var is not None:
+            var.value = self.children[2].eval(var_table, actions, code_runner)
 
 
 class Condition_Node(Node):
@@ -395,6 +419,10 @@ def create_node(name, value=None):
             return Else_Node(name=name, value=value)
         case "WhileInstruction":
             return WhileInstruction_Node(name=name, value=value)
+        case "ForInstruction":
+            return For_Node(name=name, value=value)
+        case "Increment":
+            return Increment_Node(name=name, value=value)
         case "Condition":
             return Condition_Node(name=name, value=value)
         case "C1":
