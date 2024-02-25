@@ -3,17 +3,19 @@ Id_List -> id InitialValue Id_List1 | #
 Id_List1 -> , id InitialValue Id_List1 | #
 InitialValue -> = Expression | #
 Instructions -> Instruction Instructions | #
-Instruction -> DefineInstruction | DefineGlobalInstruction | AttributionInstruction | FunctionCallInstruction | ReturnInstruction | IfInstruction | WhileInstruction | ForInstruction
+Instruction -> DefineInstruction | DefineGlobalInstruction | AttributionInstruction | FunctionCallInstruction | ReturnInstruction | IfInstruction | WhileInstruction | ForInstruction | DefineArrayInstruction | DefineGlobalArrayInstruction
 DefineInstruction -> let Id_List ;
 DefineGlobalInstruction -> global let Id_List ;
-AttributionInstruction -> id = Expression ;
+DefineArrayInstruction -> array_let ArrayIndexes Id_List ;
+DefineGlobalArrayInstruction -> array_global array_let ArrayIndexes Id_List ;
+AttributionInstruction -> id = Expression ; | ArrayRef = Expression ;
 FunctionCallInstruction -> FunctionCall ;
 ReturnInstruction -> return ReturnValue ;
 IfInstruction -> if ( Condition ) { Instructions } Else
 Else -> else { Instructions } | #
 WhileInstruction -> while ( Condition ) { Instructions }
 ForInstruction -> for ( DefineInstruction Condition ; Increment ) { Instructions }
-Increment -> id = Expression
+Increment -> id = Expression | ArrayRef = Expression
 Condition -> AndTerm C1
 C1 -> and AndTerm C1 | #
 AndTerm -> OrTerm AndTerm1
@@ -25,7 +27,10 @@ Expression -> T E1
 E1 -> + T E1 | - T E1 | #
 T -> F T1
 T1 -> * F T1 | / F T1 | #
-F -> ( Expression ) | id | const | FunctionCall
+F -> ( Expression ) | id | const | FunctionCall | ArrayValue
+ArrayValue -> array_id ArrayIndexes
+ArrayRef -> array_id ArrayIndexes
+ArrayIndexes -> [ Expression ] ArrayIndexes | #
 FunctionCall -> function_id ( Parameters )
 Parameters -> Expression Parameters1 | #
 Parameters1 -> , Expression Parameters1 | #

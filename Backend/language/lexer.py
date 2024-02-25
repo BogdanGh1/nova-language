@@ -108,6 +108,16 @@ def add_function_id_atoms(atoms: list[Atom]):
             atoms[i].type = "function_id"
 
 
+def add_array_atoms(atoms: list[Atom]):
+    for i in range(len(atoms) - 2):
+        if atoms[i].type == "id" and atoms[i + 1].value == "[":
+            atoms[i].type = "array_id"
+        if atoms[i].value == "let" and atoms[i + 1].value == "[":
+            atoms[i].value = "array_let"
+        if atoms[i].value == "global" and atoms[i + 2].value == "[":
+            atoms[i].value = "array_global"
+
+
 def get_fip(text: str) -> list[Atom]:
     atoms = identify_atoms(text.split("\n"))
 
@@ -116,6 +126,7 @@ def get_fip(text: str) -> list[Atom]:
 
     add_type(atoms_table, atoms)
     add_function_id_atoms(atoms)
+    add_array_atoms(atoms)
     return atoms
 
 

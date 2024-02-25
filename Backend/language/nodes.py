@@ -97,10 +97,55 @@ class DefineGlobalInstruction_Node(Node):
                 var.value = value
 
 
+class DefineArrayInstruction_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        id_list = self.children[2].eval(var_table, actions, code_runner)
+        indexes = self.children[1].eval(var_table, actions, code_runner)
+        for id, _ in id_list:
+            var_table.add_array(id.value, indexes)
+
+
+class DefineGlobalArrayInstruction_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        id_list = self.children[3].eval(var_table, actions, code_runner)
+        indexes = self.children[2].eval(var_table, actions, code_runner)
+        for id, _ in id_list:
+            var_table.add_global_array(id.value, indexes)
+
+
+class ArrayValue_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        indexes = self.children[1].eval(var_table, actions, code_runner)
+        array = var_table.get_var(self.children[0].value.value)
+        return array.get_value(indexes)
+
+
+class ArrayRef_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        indexes = self.children[1].eval(var_table, actions, code_runner)
+        return var_table.get_var(self.children[0].value.value), indexes
+
+
+class ArrayIndexes_Node(Node):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        if self.children[0].value == "#":
+            return []
+        indexes = self.children[3].eval(var_table, actions, code_runner)
+        index = self.children[1].eval(var_table, actions, code_runner)
+        indexes.insert(0, index)
+        return indexes
+
+
 class AttributionInstruction_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
-        var = var_table.get_var(self.children[0].value.value)
-        if var is not None:
+        if isinstance(self.children[0], ArrayRef_Node):
+            array, indexes = self.children[0].eval(var_table, actions, code_runner)
+            value = self.children[2].eval(var_table, actions, code_runner)
+            array.add_value(indexes, value)
+        else:
+            var = var_table.get_var(self.children[0].value.value)
+            if var is None:
+                return
             var.value = self.children[2].eval(var_table, actions, code_runner)
 
 
@@ -167,7 +212,13 @@ class For_Node(Node):
 class Increment_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
         var = var_table.get_var(self.children[0].value.value)
-        if var is not None:
+        if var is None:
+            return
+        if isinstance(self.children[0], ArrayRef_Node):
+            array, indexes = self.children[0].eval(var_table, actions, code_runner)
+            value = self.children[2].eval(var_table, actions, code_runner)
+            array.add_value(indexes, value)
+        else:
             var.value = self.children[2].eval(var_table, actions, code_runner)
 
 
@@ -437,4 +488,14 @@ def create_node(name, value=None):
             return RelValue_Node(name=name, value=value)
         case "InitialValue":
             return InitialValue_Node(name=name, value=value)
+        case "DefineArrayInstruction":
+            return DefineArrayInstruction_Node(name=name, value=value)
+        case "DefineGlobalArrayInstruction":
+            return DefineGlobalArrayInstruction_Node(name=name, value=value)
+        case "ArrayValue":
+            return ArrayValue_Node(name=name, value=value)
+        case "ArrayRef":
+            return ArrayRef_Node(name=name, value=value)
+        case "ArrayIndexes":
+            return ArrayIndexes_Node(name=name, value=value)
     return Node(value=value)

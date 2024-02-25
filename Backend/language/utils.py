@@ -23,7 +23,7 @@ class Production:
         for i in range(len(self._rule)):
             if (
                 isinstance(self._rule[i], str)
-                and self._rule[i] in ("id", "function_id", "const")
+                and self._rule[i] in ("id", "function_id", "const", "array_id")
                 and atom.type != "keyword"
             ):
                 self._rule[i] = atom
