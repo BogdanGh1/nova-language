@@ -1,4 +1,4 @@
-function init() {
+function start() {
     let i = 1, n = 5, s = 0;
     while (i <= n) {
         s = s + i;

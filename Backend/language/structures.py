@@ -49,6 +49,9 @@ class SourceCode:
             root = build_syntax_tree(function_atoms)
             self.functions.append(Function(root))
 
+    def add_function(self, function) -> None:
+        self.functions.append(function)
+
     def get_function(self, name: str) -> Function:
         for function in self.functions:
             if function.name == name:
@@ -60,11 +63,17 @@ class CodeRunner:
         self.code = code
         self.var_table = VariableTable()
 
-    def run(self, name: str) -> list[Action]:
+    def run(self, name: str, params: list | None = None) -> list[Action]:
         self.actions: list[Action] = []
-        self.run_function(name)
+        self.run_function(name, params)
         return self.actions
 
-    def run_function(self, name: str, params: list | None = None):
+    def add_function(self, function) -> None:
+        self.code.add_function(function)
+
+    def add_custom_global(self, var) -> None:
+        self.var_table.add_global_any(var)
+
+    def run_function(self, name: str, params: list | None = None) -> list[Action]:
         function = self.code.get_function(name)
         return function.eval(self.var_table, self.actions, self, params)

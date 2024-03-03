@@ -32,6 +32,9 @@ class VariableScope:
         array = Array(array_name, sizes)
         self.variables[array_name] = array
 
+    def add_any(self, var: Variable | Array) -> None:
+        self.variables[var.name] = var
+
     def get_var(self, var_name: str) -> Variable | None:
         if var_name in self.variables:
             return self.variables[var_name]
@@ -68,6 +71,9 @@ class VariableTable:
 
     def add_global_array(self, array_name: str, indexes: list) -> None:
         self.varScopes[0].add_array(array_name, indexes)
+
+    def add_global_any(self, var: Variable | Array) -> None:
+        self.varScopes[0].add_any(var)
 
     def pop_var_scope(self) -> None:
         self.varScopes.pop()

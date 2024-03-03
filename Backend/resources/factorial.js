@@ -1,5 +1,5 @@
-function init() {
-    print(factorial(5));
+function start() {
+    print(factorial(10));
 }
 function factorial(x) {
     if (x == 0) {

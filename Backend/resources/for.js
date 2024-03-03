@@ -1,4 +1,4 @@
-function init() {
+function start() {
     let s = 0;
     for (let i = 1; i <= 10; i = i + 1) {
         for (let j = 1; j <= 10; j = j + 1) {

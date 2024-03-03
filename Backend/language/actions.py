@@ -8,6 +8,9 @@ class Action:
     def __repr__(self) -> str:
         return str(self)
 
+    def to_dict(self) -> dict:
+        return {"type": self.type}
+
 
 class PrintAction(Action):
     def __init__(self, action_type: str, text: str) -> None:
@@ -19,3 +22,8 @@ class PrintAction(Action):
 
     def __repr__(self) -> str:
         return str(self)
+
+    def to_dict(self) -> dict:
+        dict = super().to_dict()
+        dict["text"] = self.text
+        return dict
