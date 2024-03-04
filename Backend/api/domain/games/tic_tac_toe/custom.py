@@ -1,6 +1,6 @@
 from language.actions import Action
 from language.structures import VariableTable, CodeRunner
-from language.variables import Array
+from language.variables import Array, Variable
 
 
 class SetScoreAction(Action):
@@ -11,6 +11,11 @@ class SetScoreAction(Action):
     def __str__(self) -> str:
         return super().__str__() + " " + self.value
 
+    def to_dict(self) -> dict:
+        dict = super().to_dict()
+        dict["value"] = self.value
+        return dict
+
 
 class SetCellAction(Action):
     def __init__(self, action_type: str, index: int, value: str) -> None:
@@ -20,6 +25,12 @@ class SetCellAction(Action):
 
     def __str__(self) -> str:
         return super().__str__() + " " + str(self.index) + " " + self.value
+
+    def to_dict(self) -> dict:
+        dict = super().to_dict()
+        dict["index"] = self.index
+        dict["value"] = self.value
+        return dict
 
 
 class SetScoreXFunction:
@@ -33,6 +44,8 @@ class SetScoreXFunction:
         code_runner: CodeRunner,
         params: list,
     ):
+        var = var_table.get_var("scoreX")
+        var.value = params[0]
         actions.append(SetScoreAction("setScoreX", str(params[0])))
 
 
@@ -47,6 +60,8 @@ class SetScoreOFunction:
         code_runner: CodeRunner,
         params: list,
     ):
+        var = var_table.get_var("scoreO")
+        var.value = params[0]
         actions.append(SetScoreAction("setScoreO", str(params[0])))
 
 
@@ -61,6 +76,8 @@ class SetCellFunction:
         code_runner: CodeRunner,
         params: list,
     ):
+        var = var_table.get_var("board")
+        var.add_value([params[0]], str(params[1]))
         actions.append(SetCellAction("setCell", params[0], str(params[1])))
 
 
@@ -69,4 +86,4 @@ def get_custom_functions():
 
 
 def get_custom_variables():
-    return [Array("board", [9])]
+    return [Array("board", [9]), Variable("scoreX", 0), Variable("scoreO", 0)]

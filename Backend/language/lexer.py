@@ -97,6 +97,8 @@ def add_type(
         elif is_variable(atom.value):
             atom.type = "id"
         else:
+            print(type(atom.value))
+            print(atom)
             raise ValueError(
                 "Atom" + atom.value + "necunoscut la linia " + str(atom.index)
             )
@@ -119,7 +121,7 @@ def add_array_atoms(atoms: list[Atom]):
 
 
 def get_fip(text: str) -> list[Atom]:
-    atoms = identify_atoms(text.split("\n"))
+    atoms = identify_atoms(text.replace("\r", "").split("\n"))
 
     atoms_table_file = Path("language/config/atoms_table.txt")
     atoms_table = get_atoms_table(atoms_table_file)

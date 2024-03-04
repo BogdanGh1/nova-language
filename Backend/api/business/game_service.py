@@ -14,5 +14,5 @@ class GameService:
 
     def run_event(self, game_id, event_name, parameters) -> list[dict]:
         game: Game = self.game_repository.find_by_id(uuid.UUID(game_id))
-        actions = game.code_runner.run(event_name, parameters)
+        actions = game.run_function(event_name, parameters)
         return [action.to_dict() for action in actions]

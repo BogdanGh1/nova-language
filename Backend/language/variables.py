@@ -81,7 +81,8 @@ class VariableTable:
     def get_var(self, var_name: str) -> Variable | Array | None:
         for varScope in reversed(self.varScopes):
             var = varScope.get_var(var_name)
-            if var is not None or varScope.function_flag:
+            if var is not None:
                 return var
-        var = self.varScopes[0].get_var(var_name)
-        return var
+            if varScope.function_flag:
+                var = self.varScopes[0].get_var(var_name)
+                return var

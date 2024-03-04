@@ -36,17 +36,17 @@ class GameEvent(BaseModel):
 
 
 @router.post("/")
-def create_game(
+async def create_game(
     game_data: GameData, game_service: GameService = Depends(get_game_service)
 ):
-    # logger.info(game_data)
+    logger.info(game_data)
     return game_service.create_game(
         game_data.username, game_data.game_name, game_data.code
     ).id
 
 
 @router.patch("/{id}")
-def run_event(
+async def run_event(
     id: str,
     game_event: GameEvent,
     game_service: GameService = Depends(get_game_service),

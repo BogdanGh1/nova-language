@@ -8,6 +8,7 @@ import "./ticTacToe.css";
 const TicTacToeGame = () => {
   const [code, setCode] = useState("");
   const [logs, setLogs] = useState("");
+  const [gameId, setGameId] = useState("");
 
   const [board, setBoard] = useState(Array(9).fill(null));
   const [scores, setScores] = useState({ X: 0, O: 0 });
@@ -22,16 +23,23 @@ const TicTacToeGame = () => {
       if (action.type == "setCell")
         setBoard((prevBoard) => {
           const newBoard = [...prevBoard];
-          newBoard[action.position] = action.value;
+          newBoard[action.index] = action.value;
           return newBoard;
         });
-      else if (action.type == "setScore")
+      else if (action.type == "setScoreX")
         setScores((prevScores) => {
+          console.log(action);
           const newScores = { ...prevScores };
-          newScores[action.player] = action.value;
+          newScores["X"] = action.value;
           return newScores;
         });
-      else if (action.type == "printLogs")
+      else if (action.type == "setScoreO")
+        setScores((prevScores) => {
+          const newScores = { ...prevScores };
+          newScores["O"] = action.value;
+          return newScores;
+        });
+      else if (action.type == "print")
         setLogs((prevLogs) => {
           return prevLogs + action.text + "\n";
         });
@@ -40,10 +48,27 @@ const TicTacToeGame = () => {
 
   const handleRunClick = async () => {
     console.log(code);
-    const response = await axios.post(
-      "code",
+    let response = await axios.post(
+      "games",
       JSON.stringify({
         code: code,
+        username: "user",
+        game_name: "tictactoe",
+      }),
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    console.log(response);
+    let gameId = response.data;
+    setGameId((prevGameId) => {
+      return gameId;
+    });
+
+    response = await axios.patch(
+      `games/${gameId}`,
+      JSON.stringify({
+        event_name: "start",
       }),
       {
         headers: { "Content-Type": "application/json" },
@@ -51,14 +76,22 @@ const TicTacToeGame = () => {
     );
     console.log(response);
     setLogs("");
+    setBoard(Array(9).fill(null));
     handleActions(response.data);
   };
 
   const handleCellClick = async (index) => {
     console.log(index);
-    const response = await axios.get(`tictactoe/${index}`, {
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await axios.patch(
+      `games/${gameId}`,
+      JSON.stringify({
+        event_name: "clickCell",
+        parameters: [index],
+      }),
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
     console.log(response);
     handleActions(response.data);
   };
