@@ -13,7 +13,7 @@ function LogBoard({ logs }) {
       name="1234"
       fontSize={18}
       width="400px"
-      height="605px"
+      // height="605px"
       value={logs}
       editorProps={{ $blockScrolling: true }}
       readOnly={true}

@@ -5,7 +5,7 @@ import Navbar from "../../components/menu/Navbar";
 import TicTacToe from "./TicTacToe";
 import axios from "../../api/axios";
 import "./ticTacToe.css";
-const TicTacToeGame = () => {
+const TicTacToePage = () => {
   const [code, setCode] = useState("");
   const [logs, setLogs] = useState("");
   const [gameId, setGameId] = useState("");
@@ -119,4 +119,4 @@ const TicTacToeGame = () => {
   );
 };
 
-export default TicTacToeGame;
+export default TicTacToePage;

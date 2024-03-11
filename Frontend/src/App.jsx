@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import TicTacToeGame from "./pages/ticTacToe/TicTacToeGame";
+import TicTacToePage from "./pages/ticTacToe/TicTacToePage";
 import CodeEditor from "./components/CodeEditor";
 import TicTacToe from "./pages/ticTacToe/TicTacToe";
 function App() {
@@ -16,7 +16,8 @@ function App() {
             path="/login"
             element={<Login userData={userData} setUserData={setUserData} />}
           /> */}
-          <Route path="/game" element={<TicTacToeGame />} />
+          <Route path="/game" element={<TicTacToePage />} />
+          <Route path="/" element={<TicTacToePage />} />
           <Route path="/code" element={<CodeEditor />} />
           <Route path="/tic" element={<TicTacToe />} />
         </Routes>
