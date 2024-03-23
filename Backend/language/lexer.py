@@ -1,4 +1,5 @@
 from pathlib import Path
+from language.custom_exceptions import LexerException
 from language.utils import Atom
 import re
 
@@ -99,9 +100,7 @@ def add_type(
         else:
             print(type(atom.value))
             print(atom)
-            raise ValueError(
-                "Atom" + atom.value + "necunoscut la linia " + str(atom.index)
-            )
+            raise LexerException("Atom '" + atom.value + "'necunoscut la linia " + str(atom.index))
 
 
 def add_function_id_atoms(atoms: list[Atom]):

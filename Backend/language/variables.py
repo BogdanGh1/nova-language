@@ -1,3 +1,6 @@
+from language.custom_exceptions import RuntimeException
+
+
 class Variable:
     def __init__(self, name: str, value) -> None:
         self.name = name
@@ -11,6 +14,11 @@ class Array:
         self.array_dict = {}
 
     def add_value(self, indexes: list, value) -> None:
+        for i, index in enumerate(indexes):
+            if index < 0:
+                raise RuntimeException("Negative index")
+            if index >= self.sizes[i]:
+                raise RuntimeException("Index out of range")
         self.array_dict[tuple(indexes)] = value
 
     def get_value(self, indexes: list):

@@ -1,3 +1,4 @@
+from language.custom_exceptions import SyntaxException
 from language.utils import Atom, Production
 from language.nodes import Node, create_node
 from language.lexer import get_fip
@@ -104,9 +105,7 @@ def get_follows(start_symbol: str, rules: dict, firsts: dict[set]):
                                 queue.append(symbol)
                                 ok = False
                         else:
-                            terminals = terminals.union(
-                                get_first_for_sequence(rule[j + 1 :], firsts)
-                            )
+                            terminals = terminals.union(get_first_for_sequence(rule[j + 1 :], firsts))
                             if epsilon_exists_in_sequence(rule[j + 1 :], firsts):
                                 if non_terminal in follows:
                                     for x in follows[non_terminal]:
@@ -156,9 +155,7 @@ def get_parse_table(rules, firsts, follows):
     return table
 
 
-def _parse(
-    sequence: list[Atom], table: dict[dict[list]], start_symbol: str
-) -> list[str]:
+def _parse(sequence: list[Atom], table: dict[dict[list]], start_symbol: str) -> list[str]:
     stack = ["$", start_symbol]
     sequence.append(Atom(value="$", index=-1))
     sequence.reverse()
@@ -174,7 +171,7 @@ def _parse(
                 stack.pop()
                 sequence.pop()
             else:
-                raise KeyError
+                raise SyntaxException("Syntax error")
         else:
             rule = table[stack[-1]][sequence[-1].value_type]
             productions.append(Production(stack[-1], rule))
