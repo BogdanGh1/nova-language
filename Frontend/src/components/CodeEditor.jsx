@@ -14,7 +14,7 @@ function CodeEditor({ handleCodeChange }) {
         name="123"
         fontSize={18}
         width="auto"
-        // height="985px"
+        height="900px"
         onChange={handleCodeChange}
         editorProps={{ $blockScrolling: true }}
       />

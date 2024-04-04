@@ -19,7 +19,6 @@ const TicTacToePage = () => {
 
   const handleActions = (actions) => {
     for (let action of actions) {
-      console.log(action);
       if (action.type == "setCell")
         setBoard((prevBoard) => {
           const newBoard = [...prevBoard];
@@ -28,7 +27,6 @@ const TicTacToePage = () => {
         });
       else if (action.type == "setScoreX")
         setScores((prevScores) => {
-          console.log(action);
           const newScores = { ...prevScores };
           newScores["X"] = action.value;
           return newScores;
@@ -47,7 +45,6 @@ const TicTacToePage = () => {
   };
 
   const handleRunClick = async () => {
-    console.log(code);
     let response = await axios.post(
       "games",
       JSON.stringify({
@@ -59,7 +56,12 @@ const TicTacToePage = () => {
         headers: { "Content-Type": "application/json" },
       }
     );
-    console.log(response);
+
+    if (typeof response.data !== "string") {
+      setBoard(Array(9).fill(null));
+      setLogs(response.data.error);
+      return;
+    }
     let gameId = response.data;
     setGameId((prevGameId) => {
       return gameId;
@@ -74,7 +76,12 @@ const TicTacToePage = () => {
         headers: { "Content-Type": "application/json" },
       }
     );
-    console.log(response);
+    console.log(response.data);
+    if ("error" in response.data) {
+      setBoard(Array(9).fill(null));
+      setLogs(response.data.error);
+      return;
+    }
     setLogs("");
     setBoard(Array(9).fill(null));
     handleActions(response.data);

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
+from language.custom_exceptions import LexerException, SyntaxException, RuntimeException
 from api.business.game_service import GameService
 from api.infrastructure.game_repository import GameRepository
 
@@ -36,13 +37,14 @@ class GameEvent(BaseModel):
 
 
 @router.post("/")
-async def create_game(
-    game_data: GameData, game_service: GameService = Depends(get_game_service)
-):
-    logger.info(game_data)
-    return game_service.create_game(
-        game_data.username, game_data.game_name, game_data.code
-    ).id
+async def create_game(game_data: GameData, game_service: GameService = Depends(get_game_service)):
+    # logger.info(game_data)
+    try:
+        return game_service.create_game(game_data.username, game_data.game_name, game_data.code).id
+    except LexerException as le:
+        return {"error": f"Lexer Error: {le}"}
+    except SyntaxException as se:
+        return {"error": f"Syntax Error: {se}"}
 
 
 @router.patch("/{id}")
@@ -51,5 +53,9 @@ async def run_event(
     game_event: GameEvent,
     game_service: GameService = Depends(get_game_service),
 ):
-    logger.info(game_event)
-    return game_service.run_event(id, game_event.event_name, game_event.parameters)
+    # logger.info(game_event)
+    try:
+        return game_service.run_event(id, game_event.event_name, game_event.parameters)
+    except RuntimeException as re:
+        print(re)
+        return {"error": f"Runtime Error: {re}"}

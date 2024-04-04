@@ -171,9 +171,12 @@ def _parse(sequence: list[Atom], table: dict[dict[list]], start_symbol: str) -> 
                 stack.pop()
                 sequence.pop()
             else:
-                raise SyntaxException("Syntax error")
+                raise SyntaxException(f"Expected {stack[-1]} at line {sequence[-1].index}")
         else:
-            rule = table[stack[-1]][sequence[-1].value_type]
+            try:
+                rule = table[stack[-1]][sequence[-1].value_type]
+            except KeyError as ke:
+                raise SyntaxException(f"Unexpected atom {ke} at line {sequence[-1].index}")
             productions.append(Production(stack[-1], rule))
             stack.pop()
             stack.extend(reversed(rule))

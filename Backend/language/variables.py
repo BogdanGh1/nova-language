@@ -9,22 +9,32 @@ class Variable:
 
 class Array:
     def __init__(self, name: str, sizes: list) -> None:
+        for _, index in enumerate(sizes):
+            if index < 0:
+                print(sizes)
+                raise RuntimeException("Negative index")
+
         self.name = name
         self.sizes = sizes
         self.array_dict = {}
 
     def add_value(self, indexes: list, value) -> None:
+        self.check_valid_indexes(indexes)
+        self.array_dict[tuple(indexes)] = value
+
+    def get_value(self, indexes: list):
+        self.check_valid_indexes(indexes)
+        if tuple(indexes) in self.array_dict:
+            return self.array_dict[tuple(indexes)]
+        return None
+
+    def check_valid_indexes(self, indexes) -> None:
+        print(indexes)
         for i, index in enumerate(indexes):
             if index < 0:
                 raise RuntimeException("Negative index")
             if index >= self.sizes[i]:
                 raise RuntimeException("Index out of range")
-        self.array_dict[tuple(indexes)] = value
-
-    def get_value(self, indexes: list):
-        if tuple(indexes) in self.array_dict:
-            return self.array_dict[tuple(indexes)]
-        return None
 
 
 class VariableScope:

@@ -1,3 +1,4 @@
+from language.custom_exceptions import RuntimeException
 from language.actions import Action
 from language.variables import VariableTable
 from language.utils import Atom
@@ -51,9 +52,7 @@ class Node:
 
 
 class Function_Node(Node):
-    def eval(
-        self, var_table: VariableTable, actions: list[Action], code_runner, params
-    ):
+    def eval(self, var_table: VariableTable, actions: list[Action], code_runner, params):
         id_list = self.children[3].eval(var_table, actions, code_runner)
         for index, id in enumerate(id_list):
             var_table.add_var(id[0].value)
@@ -283,9 +282,7 @@ class OrTerm_Node(Node):
 
 class RelValue_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
-        return self.children[0].value, self.children[1].eval(
-            var_table, actions, code_runner
-        )
+        return self.children[0].value, self.children[1].eval(var_table, actions, code_runner)
 
 
 class ReturnValue_Node(Node):
@@ -330,7 +327,10 @@ class Expression_Node(Node):
         t2 = self.children[1].eval(var_table, actions, code_runner)
         if t2 is None:
             return t1
-        return t1 + t2
+        try:
+            return t1 + t2
+        except TypeError as te:
+            raise RuntimeException(te)
 
 
 class E1_Node(Node):
@@ -344,12 +344,15 @@ class E1_Node(Node):
                 return t1
             elif self.children[0].value == "-":
                 return -t1
-        if self.children[0].value == "+":
-            return t2 + t1
-        elif self.children[0].value == "-":
-            return t2 - t1
-        else:
-            return None
+        try:
+            if self.children[0].value == "+":
+                return t2 + t1
+            elif self.children[0].value == "-":
+                return t2 - t1
+            else:
+                return None
+        except TypeError as te:
+            raise RuntimeException(te)
 
 
 class T_Node(Node):
@@ -358,7 +361,10 @@ class T_Node(Node):
         t2 = self.children[1].eval(var_table, actions, code_runner)
         if t2 is None:
             return t1
-        return t1 * t2
+        try:
+            return t1 * t2
+        except TypeError as te:
+            raise RuntimeException(te)
 
 
 class T1_Node(Node):
@@ -367,32 +373,29 @@ class T1_Node(Node):
             return None
         t1 = self.children[1].eval(var_table, actions, code_runner)
         t2 = self.children[2].eval(var_table, actions, code_runner)
-        if t2 is None:
+        try:
+            if t2 is None:
+                if self.children[0].value == "*":
+                    return t1
+                elif self.children[0].value == "/":
+                    return 1 / t1
             if self.children[0].value == "*":
-                return t1
+                return t2 * t1
             elif self.children[0].value == "/":
-                return 1 / t1
-        if self.children[0].value == "*":
-            return t2 * t1
-        elif self.children[0].value == "/":
-            return t2 / t1
-        else:
-            return None
+                return t2 / t1
+            else:
+                return None
+        except TypeError as te:
+            raise RuntimeException(te)
 
 
 class F_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
         if self.children[0].value == "(":
             return self.children[1].eval(var_table, actions, code_runner)
-        elif (
-            isinstance(self.children[0].value, Atom)
-            and self.children[0].value.type == "id"
-        ):
+        elif isinstance(self.children[0].value, Atom) and self.children[0].value.type == "id":
             return var_table.get_var(self.children[0].value.value).value
-        elif (
-            isinstance(self.children[0].value, Atom)
-            and self.children[0].value.type == "const"
-        ):
+        elif isinstance(self.children[0].value, Atom) and self.children[0].value.type == "const":
             return self.children[0].value.value
         else:
             return self.children[0].eval(var_table, actions, code_runner)

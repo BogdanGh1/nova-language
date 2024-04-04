@@ -98,8 +98,6 @@ def add_type(
         elif is_variable(atom.value):
             atom.type = "id"
         else:
-            print(type(atom.value))
-            print(atom)
             raise LexerException("Atom '" + atom.value + "'necunoscut la linia " + str(atom.index))
 
 
