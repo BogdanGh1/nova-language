@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./TicTacToe.css";
+import "./ticTacToe.css";
 
 function TicTacToe({ board, handleClick, scores }) {
   const renderSquare = (i) => (
