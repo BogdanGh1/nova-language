@@ -1,2 +1,3 @@
 Backend/nodes.json
-**/__pycache__
+**/__pycache__/
+Backend/database.db

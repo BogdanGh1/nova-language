@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.routers.game import router as game_router
+from api.routers.user import router as user_router
 
 import logging
 
@@ -13,6 +14,7 @@ logging.basicConfig(level=logging.INFO)
 app = FastAPI()
 
 app.include_router(game_router)
+app.include_router(user_router)
 
 logger = logging.getLogger(__name__)
 

@@ -16,10 +16,10 @@ function App() {
             path="/login"
             element={<Login userData={userData} setUserData={setUserData} />}
           /> */}
-          <Route path="/game" element={<TicTacToePage />} />
+          <Route path="/tic-tac-toe" element={<TicTacToePage />} />
+          {/* <Route path="/minesweeper" element={<MinesweeperPage />} /> */}
+          {/* <Route path="/sorting-visualizer" element={<SortingVisualizerPage />} /> */}
           <Route path="/" element={<TicTacToePage />} />
-          <Route path="/code" element={<CodeEditor />} />
-          <Route path="/tic" element={<TicTacToe />} />
         </Routes>
       </main>
     </Router>

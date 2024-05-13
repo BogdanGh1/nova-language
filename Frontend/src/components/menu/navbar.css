@@ -1,40 +1,33 @@
-nav {
+.navbar {
   display: flex;
-  background-color: #F4DFC8;
+  background-color: #ca9965;
+  align-items: center;
   /* padding: 10px; */
   width: 100%;
+  height: 3vh;
   position: relative; 
   justify-content: space-between;
-  z-index: 1000; /* High z-index to ensure it's above other elements */
 }
 
-.games-dropdown {
-  display: none;
-  position: absolute;
-  top: 100%; 
-  left: 0;
-  /* Additional styling for the dropdown */
+.game-selector > * {
+  margin-right: 15px; /* Add space between children */
+  margin-left: 10px;
 }
 
-.game-selector .games-dropdown {
-  position: absolute;
-  top: 100%; /* Position it right below the navbar */
-  left: 0;
-  background-color: #F4DFC8;
-  z-index: 1000; /* Ensures it's above other page content */
-  display: none; /* Hide it initially */
-  /* additional styling for the dropdown */
+.auth-buttons > * {
+  margin-right: 10px; /* Add space between children */
+  margin-left: 15px;
 }
 
 
-.game-selector:hover .games-dropdown  {
-  display: block; /* Show the dropdown on hover */
+.game-selector > span {
+  padding: 9px; 
 }
-.games-dropdown:hover  {
-  display: block; /* Show the dropdown on hover */
+.link:hover {
+  text-decoration: underline;
 }
 
-
-.auth-buttons {
-  /* styling for buttons */
+.link {
+  color: inherit; /* Inherit color from parent */
+  text-decoration: none; /* Remove underline */
 }

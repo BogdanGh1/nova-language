@@ -3,6 +3,7 @@ import CodeEditor from "../../components/CodeEditor";
 import LogBoard from "../../components/LogBoard";
 import Navbar from "../../components/menu/Navbar";
 import TicTacToe from "./TicTacToe";
+import TicTacToeInfo from "./TicTacToeInfo"
 import axios from "../../api/axios";
 import "./ticTacToe.css";
 const TicTacToePage = () => {
@@ -102,26 +103,64 @@ const TicTacToePage = () => {
     console.log(response);
     handleActions(response.data);
   };
+  const [selectedOption, setSelectedOption] = useState(''); // Initialize state for selected option
+
+  const handleChange = (event) => {
+    setSelectedOption(event.target.value); // Update selected option state
+  };
+  const options = ['Option 1', 'Option 2', 'Option 3']; // List of options
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <>
       <Navbar />
       <div className="container">
         <div className="left-container">
+          <div className="game-container">
           <TicTacToe
             board={board}
             handleClick={handleCellClick}
             scores={scores}
           />
-          <button className="run-button" onClick={handleRunClick}>
-            Run
-          </button>
-          <LogBoard logs={logs} />
+          <div className="button-container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            <button className="button" onClick={handleRunClick}>
+              Run
+            </button>
+            <button className="button" onClick={handleRunClick}>
+              Save
+            </button>
+            <button className="button" onClick={openModal}>
+              Info
+            </button>
+            <select value={selectedOption} onChange={handleChange}>
+              <option value="">Select an option...</option>
+              {options.map((option, index) => (
+                <option key={index} value={option}>{option}</option>
+              ))}
+            </select>
+          </div>
+          </div>
+          <div className="log-container">
+            <LogBoard 
+            logs={logs} 
+             width={"500px"}
+             height={"47vh"}/>
+          </div>
         </div>
         <div className="right-container">
           <CodeEditor handleCodeChange={handleCodeChange} />
         </div>
       </div>
+      <TicTacToeInfo modal={isModalOpen} setModal={setIsModalOpen}/>
     </>
   );
 };

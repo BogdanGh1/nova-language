@@ -6,15 +6,13 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="game-selector">
-        <div>Games</div>
-        <div className="games-dropdown">
-          <div>Tic Tac Toe</div>
-          <div>Minesweeper</div>
-        </div>
+        <Link to="/tic-tac-toe" className="link">Tic Tac Toe</Link>
+        <Link to="/tic-tac-toe" className="link">Minesweeper</Link>
+        <Link to="/tic-tac-toe" className="link">Sorting Visualizer</Link>
       </div>
       <div className="auth-buttons">
-        <button>Login</button>
-        <button>Logout</button>
+        <span className="link">Login</span>
+        <span className="link">Logout</span>
       </div>
     </nav>
   );
