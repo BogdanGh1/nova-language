@@ -1,14 +1,13 @@
 import "./ticTacToe.css";
 function TicTacToeInfo({ modal, setModal }) {
-
   const toggleModal = () => {
     setModal(!modal);
   };
 
-  if(modal) {
-    document.body.classList.add('active-modal')
+  if (modal) {
+    document.body.classList.add("active-modal");
   } else {
-    document.body.classList.remove('active-modal')
+    document.body.classList.remove("active-modal");
   }
 
   return (
@@ -34,6 +33,6 @@ function TicTacToeInfo({ modal, setModal }) {
       )}
     </>
   );
-  }
+}
 
-  export default TicTacToeInfo;
+export default TicTacToeInfo;
