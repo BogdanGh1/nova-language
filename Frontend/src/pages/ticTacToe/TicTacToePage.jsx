@@ -148,8 +148,8 @@ const TicTacToePage = () => {
               <button className="button" onClick={openModal}>
                 Info
               </button>
-              <select value={selectedOption} onChange={handleChange}>
-                <option value="">No selection</option>
+              <select value={selectedOption} onChange={handleChange} className="save-select">
+                <option value="">Select save</option>
                 {options.map((option, index) => (
                   <option key={index} value={option}>
                     {option}
