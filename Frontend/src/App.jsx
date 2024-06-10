@@ -1,21 +1,21 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import TicTacToePage from "./pages/ticTacToe/TicTacToePage";
-import CodeEditor from "./components/CodeEditor";
-import TicTacToe from "./pages/ticTacToe/TicTacToe";
+import LoginPage from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
 function App() {
   return (
     <Router>
       <main className="App">
         <Routes>
           {/* <Route path="*" element={<LandingPage />} /> */}
-          {/* <Route
+          <Route
             path="/register"
-            element={<Register userData={userData} setUserData={setUserData} />}
+            element={<RegisterPage/>}
           />
           <Route
             path="/login"
-            element={<Login userData={userData} setUserData={setUserData} />}
-          /> */}
+            element={<LoginPage />}
+          /> 
           <Route path="/tic-tac-toe" element={<TicTacToePage />} />
           {/* <Route path="/minesweeper" element={<MinesweeperPage />} /> */}
           {/* <Route path="/sorting-visualizer" element={<SortingVisualizerPage />} /> */}

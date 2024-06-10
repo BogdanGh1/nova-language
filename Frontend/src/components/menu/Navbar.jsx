@@ -17,7 +17,6 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="auth-buttons">
-        <span className="link">Login</span>
         <span className="link">Logout</span>
       </div>
     </nav>
