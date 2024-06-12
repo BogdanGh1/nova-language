@@ -9,16 +9,16 @@ const Navbar = () => {
         <Link to="/tic-tac-toe" className="link">
           Tic Tac Toe
         </Link>
-        <Link to="/tic-tac-toe" className="link">
+        <Link to="/minesweeper" className="link">
           Minesweeper
         </Link>
-        <Link to="/tic-tac-toe" className="link">
+        <Link to="/sorting-visualizer" className="link">
           Sorting Visualizer
         </Link>
       </div>
-      <div className="auth-buttons">
-        <span className="link">Logout</span>
-      </div>
+      <Link to="/login" className="link auth-buttons">
+        Logout
+      </Link>
     </nav>
   );
 };

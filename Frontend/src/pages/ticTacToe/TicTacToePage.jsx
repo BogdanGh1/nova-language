@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CodeEditor from "../../components/CodeEditor";
 import LogBoard from "../../components/LogBoard";
 import Navbar from "../../components/menu/Navbar";
@@ -6,13 +6,28 @@ import TicTacToe from "./TicTacToe";
 import TicTacToeInfo from "./TicTacToeInfo";
 import axios from "../../api/axios";
 import "./ticTacToe.css";
-const TicTacToePage = () => {
+const TicTacToePage = ({user}) => {
   const [code, setCode] = useState("");
   const [logs, setLogs] = useState("");
   const [gameId, setGameId] = useState("");
 
+  const [options, setOptions] = useState([]);
+  const [selectedOptionId, setSelectedOptionId] = useState("");
+
   const [board, setBoard] = useState(Array(9).fill(null));
   const [scores, setScores] = useState({ X: 0, O: 0 });
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const response = await axios.get(`/codes/${user.id}/tic-tac-toe`);
+        setOptions(response.data);
+      } catch (error) {
+        console.error("Error fetching options:", error);
+      }
+    };
+    fetchOptions();
+  }, []);
 
   const handleCodeChange = (newCode) => {
     setCode(newCode);
@@ -103,12 +118,52 @@ const TicTacToePage = () => {
     console.log(response);
     handleActions(response.data);
   };
-  const [selectedOption, setSelectedOption] = useState(""); // Initialize state for selected option
 
   const handleChange = (event) => {
-    setSelectedOption(event.target.value); // Update selected option state
+    const selectedId = event.target.value;
+    setSelectedOptionId(selectedId);
+    const selectedOption = options.find((option) => option.id == selectedId);
+    console.log(selectedOption.code);
+    handleCodeChange(selectedOption.code);
   };
-  const options = ["Option 1", "Option 2", "Option 3"]; // List of options
+
+  const handleSaveClick = async () => {
+    try {
+      if (selectedOptionId == 0) {
+        // If no option is selected, create a new code entry
+        const response = await axios.post(
+          `/codes/${user.id}/tic-tac-toe`,
+          { code: code },
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        const newId = response.data;
+        console.log("New code saved:", newId);
+        // Add the new option to the options state
+        setOptions((prevOptions) => [
+          ...prevOptions,
+          { id: newId, code: code },
+        ]);
+        // Set the selected option to the new ID
+        setSelectedOption(newId);
+      } else {
+        // If an option is selected, update the existing code entry
+        const response = await axios.put(
+          `/codes/${user.id}/tic-tac-toe/${selectedOptionId}`,
+          { code: code },
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        console.log("Code updated:", response.data.code);
+        const selectedOption = options.find((option) => option.id == selectedOptionId);
+        selectedOption.code = response.data.code;
+      }
+    } catch (error) {
+      console.error("Error saving code:", error);
+    }
+  };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -116,9 +171,6 @@ const TicTacToePage = () => {
     setIsModalOpen(true);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
 
   return (
     <>
@@ -142,17 +194,17 @@ const TicTacToePage = () => {
               <button className="button" onClick={handleRunClick}>
                 Run
               </button>
-              <button className="button" onClick={handleRunClick}>
+              <button className="button" onClick={handleSaveClick}>
                 Save
               </button>
               <button className="button" onClick={openModal}>
                 Info
               </button>
-              <select value={selectedOption} onChange={handleChange} className="save-select">
-                <option value="">Select save</option>
+              <select value={selectedOptionId} onChange={handleChange} className="save-select">
+                <option value={0}>Select save</option>
                 {options.map((option, index) => (
-                  <option key={index} value={option}>
-                    {option}
+                  <option key={index} value={option.id}>
+                    Version {option.id}
                   </option>
                 ))}
               </select>
@@ -163,7 +215,7 @@ const TicTacToePage = () => {
           </div>
         </div>
         <div className="right-container">
-          <CodeEditor handleCodeChange={handleCodeChange} />
+          <CodeEditor code={code} handleCodeChange={handleCodeChange} />
         </div>
       </div>
       <TicTacToeInfo modal={isModalOpen} setModal={setIsModalOpen} />

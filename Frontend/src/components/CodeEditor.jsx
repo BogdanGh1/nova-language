@@ -6,7 +6,7 @@ import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/theme-terminal";
 
-function CodeEditor({ handleCodeChange }) {
+function CodeEditor({ code, handleCodeChange }) {
   return (
     <>
       <AceEditor
@@ -16,6 +16,7 @@ function CodeEditor({ handleCodeChange }) {
         fontSize={18}
         width="70vw"
         height="97vh"
+        value={code}
         onChange={handleCodeChange}
         editorProps={{ $blockScrolling: true }}
       />

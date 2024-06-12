@@ -12,7 +12,6 @@ class UserRepository:
         self.conn.commit()
     
     def find_by_username_and_password(self, username: str, password: str) -> User:
-        print(username,password)
         self.cursor.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username,password))
         results = self.cursor.fetchall()
         if len(results) == 1:

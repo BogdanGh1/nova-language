@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from "../../api/axios";
 import './auth.css';
 
-const LoginPage = () => {
+const LoginPage = ({setUser}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('/api/login', { username, password });
+      const response = await axios.post('/users/login', { username, password });
       if (response.status === 200) {
-        // Handle successful login here (e.g., saving token, redirecting)
-        console.log('Login successful!');
+        console.log(response.data);
+        setUser(response.data);
+        navigate('/tic-tac-toe');
       } else {
         console.error('Login failed.');
       }

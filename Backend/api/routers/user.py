@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from api.business.user_service import UserService
 from api.infrastructure.user_repository import UserRepository
+from fastapi.responses import JSONResponse
 
 router = APIRouter(prefix="/users")
 
@@ -31,5 +32,7 @@ async def register(user_data: UserData, user_service: UserService = Depends(get_
 
 @router.post("/login")
 async def login(user_data: UserData, user_service: UserService = Depends(get_user_service)):
-    valid = user_service.login(user_data.username, user_data.password)
-    return valid
+    user = user_service.login(user_data.username, user_data.password)
+    if user is None:
+        return JSONResponse(status_code=404, content={"detail": "Username and password don't match"})
+    return user

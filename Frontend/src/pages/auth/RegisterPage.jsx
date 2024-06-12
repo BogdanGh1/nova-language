@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from "../../api/axios";
 import './auth.css';
 
 const RegisterPage = () => {
@@ -19,7 +19,7 @@ const RegisterPage = () => {
     }
 
     try {
-      const response = await axios.post('/api/register', { username, email, password });
+      const response = await axios.post('/users/', { username, password });
       if (response.status === 200) {
         // Handle successful registration here (e.g., redirect to login)
         console.log('Registration successful!');

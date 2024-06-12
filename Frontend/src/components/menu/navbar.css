@@ -14,7 +14,7 @@
   margin-left: 10px;
 }
 
-.auth-buttons > * {
+.auth-buttons {
   margin-right: 10px; /* Add space between children */
   margin-left: 15px;
 }

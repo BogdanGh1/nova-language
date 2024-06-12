@@ -10,9 +10,5 @@ class UserService:
         self.user_repository.add(user)
 
     def login(self, username: str, password: str) -> bool:
-        user = self.user_repository.find_by_username_and_password(username, password)
-        print (user)
-        if user is not None:
-            return True
-        return False
+        return self.user_repository.find_by_username_and_password(username, password)
     
