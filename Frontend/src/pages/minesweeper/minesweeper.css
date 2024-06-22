@@ -3,7 +3,7 @@ body{
     margin: 0%;
 }
 
-.ttt-square {
+.square {
     background: #fff;
     border: 1px solid #999;
     float: left;
@@ -18,11 +18,6 @@ body{
     width: 100px;
     cursor: pointer;
 }
-
-.ttt-square:hover {
-    background-color: #ddd;
-    font-size: 30px;
-  }
 
 .board-row:after {
     clear: both;
@@ -68,7 +63,7 @@ body{
 }
 
 .game-container{
-    height: 50vh;
+    height: 70vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -88,6 +83,9 @@ body{
     flex-direction: column;
     align-items: center;
 }
+.status{
+    font-size: 30px;
+}
 .left-container{
     width: 30vw;
 }
@@ -96,3 +94,28 @@ body{
     /* height: 100%; */
 }
 
+
+.board {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .row {
+    display: flex;
+  }
+  
+  .cell {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .cell:hover {
+    background-color: #ddd;
+  }
+  

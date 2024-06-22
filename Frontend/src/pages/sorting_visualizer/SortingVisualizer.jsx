@@ -1,9 +1,9 @@
-import React from "react";
-import "./ticTacToe.css";
+import React, { useState } from "react";
+import "./sortingVisualizer.css";
 
-function TicTacToe({ board, handleClick, scores }) {
+function SortingVisualizer({ board, handleClick, scores }) {
   const renderSquare = (i) => (
-    <button className="ttt-square" onClick={() => handleClick(i)}>
+    <button className="square" onClick={() => handleClick(i)}>
       {board[i]}
     </button>
   );
@@ -32,4 +32,4 @@ function TicTacToe({ board, handleClick, scores }) {
   );
 }
 
-export default TicTacToe;
+export default SortingVisualizer;

@@ -1,5 +1,5 @@
 import "../modal.css";
-function TicTacToeInfo({ modal, setModal }) {
+function SortingVisualizerInfo({ modal, setModal }) {
   const toggleModal = () => {
     setModal(!modal);
   };
@@ -58,4 +58,4 @@ function TicTacToeInfo({ modal, setModal }) {
   );
 }
 
-export default TicTacToeInfo;
+export default SortingVisualizerInfo;

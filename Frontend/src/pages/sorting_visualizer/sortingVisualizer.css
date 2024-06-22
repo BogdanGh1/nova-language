@@ -3,7 +3,7 @@ body{
     margin: 0%;
 }
 
-.ttt-square {
+.square {
     background: #fff;
     border: 1px solid #999;
     float: left;
@@ -18,11 +18,6 @@ body{
     width: 100px;
     cursor: pointer;
 }
-
-.ttt-square:hover {
-    background-color: #ddd;
-    font-size: 30px;
-  }
 
 .board-row:after {
     clear: both;
@@ -88,6 +83,9 @@ body{
     flex-direction: column;
     align-items: center;
 }
+.status{
+    font-size: 30px;
+}
 .left-container{
     width: 30vw;
 }
@@ -95,4 +93,3 @@ body{
     width: 70vw;
     /* height: 100%; */
 }
-
