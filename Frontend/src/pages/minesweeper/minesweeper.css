@@ -1,8 +1,3 @@
-body{
-    height: 100%;
-    margin: 0%;
-}
-
 .square {
     background: #fff;
     border: 1px solid #999;
@@ -24,44 +19,6 @@ body{
     content: "";
     display: table;
 }
-
-.status {
-    margin-bottom: 10px;
-}
-
-.button {
-    background-color: #4CAF50; /* Green */
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-}
-
-.save-select{
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-}
-
-.container{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    /* height: 100%; */
-}
-
 .game-container{
     height: 70vh;
     display: flex;
@@ -82,9 +39,6 @@ body{
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-.status{
-    font-size: 30px;
 }
 .left-container{
     width: 30vw;

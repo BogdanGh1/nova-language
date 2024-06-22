@@ -6,6 +6,7 @@ import TicTacToe from "./SortingVisualizer";
 import TicTacToeInfo from "./SortingVisualizerInfo";
 import axios from "../../api/axios";
 import "./sortingVisualizer.css";
+import "../general.css";
 const SortingVisualizer = ({user}) => {
   const [code, setCode] = useState("");
   const [logs, setLogs] = useState("");

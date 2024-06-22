@@ -6,6 +6,7 @@ import TicTacToe from "./TicTacToe";
 import TicTacToeInfo from "./TicTacToeInfo";
 import axios from "../../api/axios";
 import "./ticTacToe.css";
+import "../general.css";
 const TicTacToePage = ({user}) => {
   const [code, setCode] = useState("");
   const [logs, setLogs] = useState("");

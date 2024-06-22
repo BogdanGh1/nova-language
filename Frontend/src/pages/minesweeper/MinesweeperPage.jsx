@@ -4,6 +4,7 @@ import LogBoard from "../../components/LogBoard";
 import Navbar from "../../components/menu/Navbar";
 import axios from "../../api/axios";
 import "./minesweeper.css";
+import "../general.css";
 import MinesweeperInfo from "./MinesweeperInfo";
 import Minesweeper from "./Minesweeper";
 const MinesweeperPage = ({user}) => {
