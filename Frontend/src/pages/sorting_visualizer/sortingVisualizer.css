@@ -14,12 +14,6 @@
     cursor: pointer;
 }
 
-.board-row:after {
-    clear: both;
-    content: "";
-    display: table;
-}
-
 .game-container{
     height: 50vh;
     display: flex;
@@ -27,11 +21,6 @@
     align-items: center;
 }
 
-.button-container{
-    display: 'grid'; 
-    grid-template-columns: '1fr 1fr'; 
-    gap: '10px';
-}
 .log-container{
     height: 47vh;
 }

@@ -1,38 +1,12 @@
-.square {
-    background: #fff;
-    border: 1px solid #999;
-    float: left;
-    font-size: 24px;
-    font-weight: bold;
-    line-height: 34px;
-    height: 10vh;
-    margin-right: -1px;
-    margin-top: -1px;
-    padding: 0;
-    text-align: center;
-    width: 100px;
-    cursor: pointer;
-}
-
-.board-row:after {
-    clear: both;
-    content: "";
-    display: table;
-}
-.game-container{
-    height: 70vh;
+.ms-container{
+    height: 60vh;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.button-container{
-    display: 'grid'; 
-    grid-template-columns: '1fr 1fr'; 
-    gap: '10px';
-}
-.log-container{
-    height: 47vh;
+.ms-logs{
+    height: 37vh;
 }
 
 .tic-tac-toe-container{
@@ -40,12 +14,12 @@
     flex-direction: column;
     align-items: center;
 }
+
 .left-container{
     width: 30vw;
 }
-.right-container{
+.main{
     width: 70vw;
-    /* height: 100%; */
 }
 
 

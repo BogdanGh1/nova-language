@@ -34,24 +34,13 @@ const MinesweeperPage = ({user}) => {
   };
 
   const handleActions = (actions) => {
+    console.log(actions);
     for (let action of actions) {
       if (action.type == "setCell")
         setBoard((prevBoard) => {
-          const newBoard = [...prevBoard];
-          newBoard[action.index] = action.value;
+          const newBoard = prevBoard.map(innerArray => innerArray.slice());
+          newBoard[action.row][action.col] = action.value;
           return newBoard;
-        });
-      else if (action.type == "setScoreX")
-        setScores((prevScores) => {
-          const newScores = { ...prevScores };
-          newScores["X"] = action.value;
-          return newScores;
-        });
-      else if (action.type == "setScoreO")
-        setScores((prevScores) => {
-          const newScores = { ...prevScores };
-          newScores["O"] = action.value;
-          return newScores;
         });
       else if (action.type == "print")
         setLogs((prevLogs) => {
@@ -66,7 +55,7 @@ const MinesweeperPage = ({user}) => {
       JSON.stringify({
         code: code,
         username: "user",
-        game_name: "tictactoe",
+        game_name: "minesweeper",
       }),
       {
         headers: { "Content-Type": "application/json" },
@@ -74,7 +63,7 @@ const MinesweeperPage = ({user}) => {
     );
 
     if (typeof response.data !== "string") {
-      setBoard(Array(9).fill(null));
+      setBoard(Array(20).fill(Array(20).fill(' ')));
       setLogs(response.data.error);
       return;
     }
@@ -94,39 +83,44 @@ const MinesweeperPage = ({user}) => {
     );
     console.log(response.data);
     if ("error" in response.data) {
-      setBoard(Array(9).fill(null));
+      setBoard(Array(20).fill(Array(20).fill(' ')));
       setLogs(response.data.error);
       return;
     }
     setLogs("");
-    setBoard(Array(9).fill(null));
+    setBoard(Array(20).fill(Array(20).fill(' ')));
+    handleActions(response.data);
+  };
+  const handleLeftClick = async (row, col) => {
+    console.log(`Left click at (${row}, ${col})`);
+    const response = await axios.patch(
+      `games/${gameId}`,
+      JSON.stringify({
+        event_name: "leftClickCell",
+        parameters: [row, col],
+      }),
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    console.log(response);
     handleActions(response.data);
   };
 
-  // const handleCellClick = async (index) => {
-  //   console.log(index);
-  //   const response = await axios.patch(
-  //     `games/${gameId}`,
-  //     JSON.stringify({
-  //       event_name: "clickCell",
-  //       parameters: [index],
-  //     }),
-  //     {
-  //       headers: { "Content-Type": "application/json" },
-  //     }
-  //   );
-  //   console.log(response);
-  //   handleActions(response.data);
-  // };
-
-  const handleLeftClick = (row, col) => {
-    console.log(`Left click at (${row}, ${col})`);
-    // Implement left click logic here
-  };
-
-  const handleRightClick = (row, col) => {
+  const handleRightClick = async (row, col) => {
     console.log(`Right click at (${row}, ${col})`);
-    // Implement right click logic here
+    const response = await axios.patch(
+      `games/${gameId}`,
+      JSON.stringify({
+        event_name: "rightClickCell",
+        parameters: [row, col],
+      }),
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    console.log(response);
+    handleActions(response.data);
   };
 
   const handleChange = (event) => {
@@ -187,7 +181,7 @@ const MinesweeperPage = ({user}) => {
       <Navbar />
       <div className="container">
         <div className="left-container">
-          <div className="game-container">
+          <div className="ms-container">
             <Minesweeper
               board={board}
               handleLeftClick={handleLeftClick}
@@ -220,11 +214,11 @@ const MinesweeperPage = ({user}) => {
               </select>
             </div>
           </div>
-          <div className="log-container">
-            <LogBoard logs={logs} width={"500px"} height={"47vh"} />
+          <div className="ms-logs">
+            <LogBoard logs={logs} width={"550px"} height={"37vh"} />
           </div>
         </div>
-        <div className="right-container">
+        <div className="main">
           <CodeEditor code={code} handleCodeChange={handleCodeChange} />
         </div>
       </div>

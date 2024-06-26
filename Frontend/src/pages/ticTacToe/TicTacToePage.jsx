@@ -178,7 +178,7 @@ const TicTacToePage = ({user}) => {
       <Navbar />
       <div className="container">
         <div className="left-container">
-          <div className="game-container">
+          <div className="ttt-container">
             <TicTacToe
               board={board}
               handleClick={handleCellClick}
@@ -211,11 +211,11 @@ const TicTacToePage = ({user}) => {
               </select>
             </div>
           </div>
-          <div className="log-container">
+          <div className="ttt-logs">
             <LogBoard logs={logs} width={"500px"} height={"47vh"} />
           </div>
         </div>
-        <div className="right-container">
+        <div className="main">
           <CodeEditor code={code} handleCodeChange={handleCodeChange} />
         </div>
       </div>

@@ -1,5 +1,6 @@
 from api.domain.games.game import Game
 from api.domain.games.tic_tac_toe import TicTacToeGame
+from api.domain.games.minesweeper import MinesweeperGame
 from language.structures import SourceCode, CodeRunner
 import uuid
 
@@ -11,3 +12,5 @@ def create_game(name: str, username: str, text: str) -> Game:
     match name:
         case "tictactoe":
             return TicTacToeGame(id, username, code_runner)
+        case "minesweeper":
+            return MinesweeperGame(id, username, code_runner)
