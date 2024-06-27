@@ -323,6 +323,8 @@ class InitialValue_Node(Node):
 
 class Expression_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
+        if self.children[0].value == "-":
+            return -self.children[1].eval(var_table, actions, code_runner)
         t1 = self.children[0].eval(var_table, actions, code_runner)
         t2 = self.children[1].eval(var_table, actions, code_runner)
         if t2 is None:
