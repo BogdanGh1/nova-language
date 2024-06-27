@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./sortingVisualizer.css";
 
-function SortingVisualizer({ board, handleClick, scores }) {
+function SortingVisualizer() {
   const [bars, setBars] = useState([]);
+  const [swappedIndices, setSwappedIndices] = useState([]);
 
   useEffect(() => {
     resetBars();
@@ -11,6 +12,7 @@ function SortingVisualizer({ board, handleClick, scores }) {
   const resetBars = () => {
     const newBars = Array.from({ length: 10 }, () => Math.floor(Math.random() * 10) + 1);
     setBars(newBars);
+    setSwappedIndices([]);
   };
 
   const bubbleSort = async () => {
@@ -22,8 +24,13 @@ function SortingVisualizer({ board, handleClick, scores }) {
           let temp = array[j];
           array[j] = array[j + 1];
           array[j + 1] = temp;
+          setSwappedIndices([j, j + 1]);
+          await new Promise(resolve => setTimeout(resolve, 300)); // Add delay for visualization
+          setSwappedIndices([]);
           setBars([...array]);
-          await new Promise(resolve => setTimeout(resolve, 200)); // Add delay for visualization
+          setSwappedIndices([j, j + 1]);
+          await new Promise(resolve => setTimeout(resolve, 300)); // Add delay for visualization
+          setSwappedIndices([]);
         }
       }
     }
@@ -39,7 +46,7 @@ function SortingVisualizer({ board, handleClick, scores }) {
             style={{
               width: '30px',
               height: `${height * 20}px`,
-              backgroundColor: 'turquoise',
+              backgroundColor: swappedIndices.includes(idx) ? 'red' : 'turquoise',
               margin: '0 5px',
               transition: 'height 0.2s ease'
             }}

@@ -4,7 +4,8 @@ from language.variables import VariableTable
 from language.lexer import get_functions_atoms
 from language.parser import build_syntax_tree
 
-
+import random
+import time
 class Function:
     def __init__(self, root: Node) -> None:
         self.syntax_root = root
@@ -36,9 +37,24 @@ class PrintFunction:
     ):
         actions.append(PrintAction("print", str(params[0])))
 
+class RandomFunction:
+    def __init__(self) -> None:
+        self.name = "random"
+
+    def eval(
+        self,
+        var_table: VariableTable,
+        actions: list[Action],
+        code_runner: "CodeRunner",
+        params: list,
+    ):
+        current_time = time.time()
+        random.seed(current_time)
+        return random.randint(params[0], params[1])
+
 
 def get_base_functions() -> list[Function]:
-    return [PrintFunction()]
+    return [PrintFunction(), RandomFunction()]
 
 
 class SourceCode:

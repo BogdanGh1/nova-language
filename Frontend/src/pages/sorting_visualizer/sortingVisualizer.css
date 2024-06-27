@@ -14,15 +14,15 @@
     cursor: pointer;
 }
 
-.game-container{
-    height: 50vh;
+.sv-game-container{
+    height: 55vh;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.log-container{
-    height: 47vh;
+.sv-log-container{
+    height: 42vh;
 }
 
 .tic-tac-toe-container{
