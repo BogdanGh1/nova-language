@@ -29,7 +29,6 @@ class Array:
         return None
 
     def check_valid_indexes(self, indexes) -> None:
-        print(indexes)
         for i, index in enumerate(indexes):
             if index < 0:
                 raise RuntimeException("Negative index")

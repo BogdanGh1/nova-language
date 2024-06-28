@@ -10,12 +10,10 @@ class Repository:
 
     def add(self, entity: Entity) -> Entity:
         self.entities[entity.id] = entity
-        logger.info(self.entities)
         return entity
 
     def remove(self, id) -> Entity:
         return self.entities.pop(id)
 
     def find_by_id(self, id) -> Entity:
-        logger.info(self.entities)
         return self.entities[id]

@@ -35,6 +35,9 @@ class GameEvent(BaseModel):
     event_name: str
     parameters: list[int | float | str] | None = None
 
+class ArrayData(BaseModel):
+    name: str
+    values: list[int | float | str]
 
 @router.post("/")
 async def create_game(game_data: GameData, game_service: GameService = Depends(get_game_service)):
@@ -56,6 +59,18 @@ async def run_event(
     # logger.info(game_event)
     try:
         return game_service.run_event(id, game_event.event_name, game_event.parameters)
+    except RuntimeException as re:
+        print(re)
+        return {"error": f"Runtime Error: {re}"}
+
+@router.patch("/{id}/add-array")
+async def add_var(
+    id: str,
+    array_data: ArrayData,
+    game_service: GameService = Depends(get_game_service),
+):
+    try:
+        return game_service.add_array(id, array_data.name, array_data.values)
     except RuntimeException as re:
         print(re)
         return {"error": f"Runtime Error: {re}"}

@@ -11,6 +11,7 @@ function TicTacToe({ board, handleClick, scores }) {
 
   return (
     <div className="tic-tac-toe-container">
+      <br />
       <div className="status">{score}</div>
       <div className="tic-tac-toe-board"></div>
       <div className="ttt-board-row">

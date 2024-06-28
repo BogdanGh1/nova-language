@@ -29,6 +29,7 @@ const Cell = ({ value, id, onLeftClick, onRightClick }) => {
 const Minesweeper = ({ board, handleLeftClick, handleRightClick }) => {
   return (
     <div className="board">
+      <br />
       {board.map((row, rowIndex) => (
         <div key={rowIndex} className="row">
           {row.map((cell, colIndex) => (

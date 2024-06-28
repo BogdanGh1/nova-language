@@ -1,18 +1,12 @@
 .ms-container{
-    height: 60vh;
+    height: 63vh;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .ms-logs{
-    height: 37vh;
-}
-
-.tic-tac-toe-container{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    height: 34vh;
 }
 
 .left-container{

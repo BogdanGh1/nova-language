@@ -150,7 +150,8 @@ class AttributionInstruction_Node(Node):
 
 class FunctionCallInstruction_Node(Node):
     def eval(self, var_table: VariableTable, actions: list[Action], code_runner):
-        return self.children[0].eval(var_table, actions, code_runner)
+        # return self.children[0].eval(var_table, actions, code_runner)
+        self.children[0].eval(var_table, actions, code_runner)
 
 
 class ReturnInstruction_Node(Node):

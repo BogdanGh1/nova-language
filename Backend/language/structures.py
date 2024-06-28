@@ -52,9 +52,21 @@ class RandomFunction:
         random.seed(current_time)
         return random.randint(params[0], params[1])
 
+class IntFunction:
+    def __init__(self) -> None:
+        self.name = "int"
+
+    def eval(
+        self,
+        var_table: VariableTable,
+        actions: list[Action],
+        code_runner: "CodeRunner",
+        params: list,
+    ):
+        return int(params[0])
 
 def get_base_functions() -> list[Function]:
-    return [PrintFunction(), RandomFunction()]
+    return [PrintFunction(), RandomFunction(),IntFunction()]
 
 
 class SourceCode:

@@ -22,7 +22,7 @@ function App() {
           /> 
           <Route path="/tic-tac-toe" element={<TicTacToePage user={user}/>} />
           <Route path="/minesweeper" element={<MinesweeperPage user={user}/>} /> 
-          <Route path="/sorting-visualizer" element={<SortingVisualizerPage />} />
+          <Route path="/sorting-visualizer" element={<SortingVisualizerPage user={user}/>} />
           <Route path="/" element={<Navigate to="/login" />} />
         </Routes>
       </main>

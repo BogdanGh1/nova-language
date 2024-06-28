@@ -215,7 +215,7 @@ const MinesweeperPage = ({user}) => {
             </div>
           </div>
           <div className="ms-logs">
-            <LogBoard logs={logs} width={"550px"} height={"37vh"} />
+            <LogBoard logs={logs} width={"550px"} height={"34vh"} />
           </div>
         </div>
         <div className="main">

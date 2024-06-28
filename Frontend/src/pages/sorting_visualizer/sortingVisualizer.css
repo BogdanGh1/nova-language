@@ -15,14 +15,14 @@
 }
 
 .sv-game-container{
-    height: 55vh;
+    height: 50vh;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .sv-log-container{
-    height: 42vh;
+    height: 47vh;
 }
 
 .tic-tac-toe-container{

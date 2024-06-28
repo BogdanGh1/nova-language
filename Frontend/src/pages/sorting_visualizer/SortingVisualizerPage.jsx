@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import CodeEditor from "../../components/CodeEditor";
 import LogBoard from "../../components/LogBoard";
 import Navbar from "../../components/menu/Navbar";
-import TicTacToe from "./SortingVisualizer";
+import SortingVisualizer from "./SortingVisualizer";
 import TicTacToeInfo from "./SortingVisualizerInfo";
 import axios from "../../api/axios";
 import "./sortingVisualizer.css";
 import "../general.css";
-const SortingVisualizer = ({user}) => {
+
+const SortingVisualizerPage = ({user}) => {
   const [code, setCode] = useState("");
   const [logs, setLogs] = useState("");
   const [gameId, setGameId] = useState("");
@@ -15,13 +16,26 @@ const SortingVisualizer = ({user}) => {
   const [options, setOptions] = useState([]);
   const [selectedOptionId, setSelectedOptionId] = useState("");
 
-  const [board, setBoard] = useState(Array(9).fill(null));
-  const [scores, setScores] = useState({ X: 0, O: 0 });
+  const [bars, setBars] = useState([]);
+  const [swappedIndices, setSwappedIndices] = useState([]);
+
+  useEffect(() => {
+    resetBars();
+  }, []);
+
+  const resetBars = () => {
+    const newBars = Array.from({ length: 10 }, () => Math.floor(Math.random() * 10) + 1);
+    setBars((prevBars) => {
+      return newBars;
+    });
+    setSwappedIndices([]);
+    console.log(newBars);
+  };
 
   useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const response = await axios.get(`/codes/${user.id}/minesweeper`);
+        const response = await axios.get(`/codes/${user.id}/sorting-visualizer`);
         setOptions(response.data);
       } catch (error) {
         console.error("Error fetching options:", error);
@@ -34,30 +48,44 @@ const SortingVisualizer = ({user}) => {
     setCode(newCode);
   };
 
-  const handleActions = (actions) => {
+  const handleActions = async (actions) => {
+    let array = [...bars];
     for (let action of actions) {
-      if (action.type == "setCell")
-        setBoard((prevBoard) => {
-          const newBoard = [...prevBoard];
-          newBoard[action.index] = action.value;
-          return newBoard;
-        });
-      else if (action.type == "setScoreX")
-        setScores((prevScores) => {
-          const newScores = { ...prevScores };
-          newScores["X"] = action.value;
-          return newScores;
-        });
-      else if (action.type == "setScoreO")
-        setScores((prevScores) => {
-          const newScores = { ...prevScores };
-          newScores["O"] = action.value;
-          return newScores;
-        });
-      else if (action.type == "print")
+      if (action.type == "print")
         setLogs((prevLogs) => {
           return prevLogs + action.text + "\n";
         });
+      else if(action.type == "swap"){
+          let i = action.i1;
+          let j = action.i2;
+          let time = action.time;
+          
+          let temp = array[i];
+          array[i] = array[j];
+          array[j] = temp;
+          setSwappedIndices([i,j]);
+          await new Promise(resolve => setTimeout(resolve, time)); // Add delay for visualization
+          setSwappedIndices([]);
+          setBars((prevBars) => {
+            return array;
+          });
+          setSwappedIndices([i,j]);
+          await new Promise(resolve => setTimeout(resolve, time)); // Add delay for visualization
+          setSwappedIndices([]);
+      }
+      else if(action.type == "setValue"){
+          let index = action.index;
+          let value = action.value;
+          let time = action.time;
+          
+          array[index] = value;
+          setSwappedIndices([index]);
+          await new Promise(resolve => setTimeout(resolve, time)); // Add delay for visualization
+          setSwappedIndices([]);
+          setBars((prevBars) => {
+            return array;
+          });
+      }
     }
   };
 
@@ -67,7 +95,7 @@ const SortingVisualizer = ({user}) => {
       JSON.stringify({
         code: code,
         username: "user",
-        game_name: "tictactoe",
+        game_name: "sorting-visualizer",
       }),
       {
         headers: { "Content-Type": "application/json" },
@@ -75,7 +103,6 @@ const SortingVisualizer = ({user}) => {
     );
 
     if (typeof response.data !== "string") {
-      setBoard(Array(9).fill(null));
       setLogs(response.data.error);
       return;
     }
@@ -83,48 +110,42 @@ const SortingVisualizer = ({user}) => {
     setGameId((prevGameId) => {
       return gameId;
     });
-
-    response = await axios.patch(
-      `games/${gameId}`,
-      JSON.stringify({
-        event_name: "start",
-      }),
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    console.log(response.data);
-    if ("error" in response.data) {
-      setBoard(Array(9).fill(null));
-      setLogs(response.data.error);
-      return;
-    }
     setLogs("");
-    setBoard(Array(9).fill(null));
-    handleActions(response.data);
   };
 
-  const handleCellClick = async (index) => {
-    console.log(index);
-    const response = await axios.patch(
-      `games/${gameId}`,
-      JSON.stringify({
-        event_name: "clickCell",
-        parameters: [index],
-      }),
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    console.log(response);
-    handleActions(response.data);
-  };
+  const handleStartSortingClick = async () => {
+    if (gameId !== ""){
+      console.log(bars);
+      let response = await axios.patch(
+        `games/${gameId}/add-array`,
+        JSON.stringify({
+          name: "array",
+          values: bars
+        }),
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      response = await axios.patch(
+        `games/${gameId}`,
+        JSON.stringify({
+          event_name: "sort",
+        }),
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log(response);
+      await handleActions(response.data);
+    } 
+  }
 
   const handleChange = (event) => {
     const selectedId = event.target.value;
     setSelectedOptionId(selectedId);
     const selectedOption = options.find((option) => option.id == selectedId);
-    console.log(selectedOption.code);
+    // console.log(selectedOption.code);
     handleCodeChange(selectedOption.code);
   };
 
@@ -133,7 +154,7 @@ const SortingVisualizer = ({user}) => {
       if (selectedOptionId == 0) {
         // If no option is selected, create a new code entry
         const response = await axios.post(
-          `/codes/${user.id}/minesweeper`,
+          `/codes/${user.id}/sorting-visualizer`,
           { code: code },
           {
             headers: { "Content-Type": "application/json" },
@@ -151,7 +172,7 @@ const SortingVisualizer = ({user}) => {
       } else {
         // If an option is selected, update the existing code entry
         const response = await axios.put(
-          `/codes/${user.id}/minesweeper/${selectedOptionId}`,
+          `/codes/${user.id}/sorting-visualizer/${selectedOptionId}`,
           { code: code },
           {
             headers: { "Content-Type": "application/json" },
@@ -178,11 +199,12 @@ const SortingVisualizer = ({user}) => {
       <Navbar />
       <div className="container">
         <div className="left-container">
-          <div className="game-container">
-            <TicTacToe
-              board={board}
-              handleClick={handleCellClick}
-              scores={scores}
+          <div className="sv-game-container">
+            <SortingVisualizer 
+              bars={bars} 
+              swappedIndices={swappedIndices} 
+              resetBars={resetBars}
+              handleSort={handleStartSortingClick}
             />
             <div
               className="button-container"
@@ -211,8 +233,8 @@ const SortingVisualizer = ({user}) => {
               </select>
             </div>
           </div>
-          <div className="log-container">
-            <LogBoard logs={logs} width={"500px"} height={"47vh"} />
+          <div className="sv-log-container">
+            <LogBoard logs={logs} width={"550px"} height={"47vh"} />
           </div>
         </div>
         <div className="right-container">
@@ -224,4 +246,4 @@ const SortingVisualizer = ({user}) => {
   );
 };
 
-export default SortingVisualizer;
+export default SortingVisualizerPage;
