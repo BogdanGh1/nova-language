@@ -37,6 +37,9 @@ const SortingVisualizerPage = ({user}) => {
       try {
         const response = await axios.get(`/codes/${user.id}/sorting-visualizer`);
         setOptions(response.data);
+        response.data.forEach((obj, index) => {
+          obj.index = index + 1;
+        });
       } catch (error) {
         console.error("Error fetching options:", error);
       }
@@ -227,7 +230,7 @@ const SortingVisualizerPage = ({user}) => {
                 <option value={0}>Select save</option>
                 {options.map((option, index) => (
                   <option key={index} value={option.id}>
-                    Version {option.id}
+                    Version {option.index}
                   </option>
                 ))}
               </select>

@@ -32,14 +32,27 @@ class SetCellFunction:
         code_runner: CodeRunner,
         params: list,
     ):
-        var = var_table.get_var("board")
+        var = var_table.get_var("__board")
         var.add_value([params[0],params[1]], str(params[2]))
         actions.append(SetCellAction("setCell", params[0], params[1], str(params[2])))
 
+# class GetCellFunction:
+#     def __init__(self) -> None:
+#         self.name = "getCell"
+
+#     def eval(
+#         self,
+#         var_table: VariableTable,
+#         actions: list[Action],
+#         code_runner: CodeRunner,
+#         params: list,
+#     ):
+#         board = var_table.get_var("__board")
+#         return board.array_dict[(params[0], params[1])]
 
 def get_custom_functions():
     return [SetCellFunction()]
 
 
 def get_custom_variables():
-    return [Array("board", [20,20])]
+    return [Array("__board", [20,20])]

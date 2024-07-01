@@ -73,6 +73,9 @@ def identify_atoms(lines: list[str]) -> list[Atom]:
 def is_constant(value: str) -> bool:
     return re.fullmatch(r"^\d+$", value)
 
+def is_float(value: str) -> bool:
+    return re.fullmatch(r"^\d+\.\d+$", value)
+
 
 def is_string(value: str) -> bool:
     return re.fullmatch(r'^".*"$', value)
@@ -92,6 +95,9 @@ def add_type(
         elif is_constant(atom.value):
             atom.type = "const"
             atom.value = int(atom.value)
+        elif is_float(atom.value):
+            atom.type = "const"
+            atom.value = float(atom.value)
         elif is_string(atom.value):
             atom.type = "const"
             atom.value = atom.value[1:-1]

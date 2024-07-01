@@ -80,10 +80,15 @@ class SetCellFunction:
         var.add_value([params[0]], str(params[1]))
         actions.append(SetCellAction("setCell", params[0], str(params[1])))
 
+def get_board():
+    board = Array("board", [9])
+    for i in range(9):
+        board.add_value([i], "")
+    return board
 
 def get_custom_functions():
     return [SetScoreXFunction(), SetScoreOFunction(), SetCellFunction()]
 
 
 def get_custom_variables():
-    return [Array("board", [9]), Variable("scoreX", 0), Variable("scoreO", 0)]
+    return [get_board(), Variable("scoreX", 0), Variable("scoreO", 0)]

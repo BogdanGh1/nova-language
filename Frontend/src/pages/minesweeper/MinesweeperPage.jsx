@@ -21,6 +21,9 @@ const MinesweeperPage = ({user}) => {
     const fetchOptions = async () => {
       try {
         const response = await axios.get(`/codes/${user.id}/minesweeper`);
+        response.data.forEach((obj, index) => {
+          obj.index = index + 1;
+        });
         setOptions(response.data);
       } catch (error) {
         console.error("Error fetching options:", error);
@@ -208,7 +211,7 @@ const MinesweeperPage = ({user}) => {
                 <option value={0}>Select save</option>
                 {options.map((option, index) => (
                   <option key={index} value={option.id}>
-                    Version {option.id}
+                    Version {option.index}
                   </option>
                 ))}
               </select>
