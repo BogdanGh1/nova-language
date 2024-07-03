@@ -12,12 +12,12 @@ class UserService:
         self.user_repository = user_repository
     
     def register(self, username:str, password: str) -> None:
-        # password = getHashedPassword(password)
+        password = getHashedPassword(password)
         user = User(1,username,password)
         self.user_repository.add(user)
 
     def login(self, username: str, password: str) -> bool:
-        # password = getHashedPassword(password)
+        password = getHashedPassword(password)
         return self.user_repository.find_by_username_and_password(username, password)
     
     
